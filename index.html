@@ -2156,6 +2156,8 @@
 
 
 
+
+
 /* ═══════════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════════ */
@@ -3150,7 +3152,9 @@ function runPing() {
   setTimeout(()=>{
     // ── 1: Physische Verbindung ──
     if(path.length === 0) {
-      log(`Ping: Zeitüberschreitung ─ keine physische Verbindung`,'err');
+      // ARP schlägt fehl → eigener Host meldet "Zielhost nicht erreichbar"
+      log(`Antwort von ${from.ip||from.label}: Zielhost nicht erreichbar.`,'err');
+      log(`  (Keine physische Verbindung – ARP-Anfrage erfolglos)`,'warn');
       return;
     }
 
@@ -3164,8 +3168,15 @@ function runPing() {
     let hopResult = simulatePingHops(fId, tId, path, ttl);
 
     if(hopResult.blocked) {
-      log(`Ping: Zeitüberschreitung bei Hop ${hopResult.hopNum} (${hopResult.blockedAt}) ─ ${hopResult.reason}`,'err');
-      // Animate up to the blocking hop
+      // ICMP-Semantik: Router ohne Route sendet "Destination Unreachable" (explizite Fehlermeldung)
+      // Firewall/Zone-Block: stilles Verwerfen → Zeitüberschreitung
+      if(hopResult.icmpType === 'unreachable') {
+        log(`Antwort von ${hopResult.fromIp||hopResult.blockedAt}: Zielnetz nicht erreichbar (Destination Unreachable).`,'err');
+        log(`  Grund: ${hopResult.reason}`,'warn');
+      } else {
+        log(`Ping: Zeitüberschreitung der Anforderung.`,'err');
+        log(`  Grund: ${hopResult.reason}`,'warn');
+      }
       animatePath(path.slice(0, hopResult.hopNum + 1));
       return;
     }
@@ -3179,113 +3190,53 @@ function runPing() {
   }, 600);
 }
 
-function simulatePingHops(fromId, toId, path, ttl) {
-  // Simulate hop-by-hop forwarding
-  // Returns {blocked, hopNum, blockedAt, reason, hops}
-  const fromNode = nodes[fromId];
-  const toNode   = nodes[toId];
-  const toSubnet = getSubnet(toNode.ip);
-
-  for(let i = 0; i < path.length - 1; i++) {
-    const current = nodes[path[i]];
-    const next    = nodes[path[i+1]];
-    if(!current || !next) continue;
-
-    // TTL check
-    if(i >= ttl) return {blocked:true, hopNum:i, blockedAt:current.label, reason:'TTL abgelaufen'};
-
-    // Zone block
-    const zoneBlock = checkZoneBlock(fromNode, toNode, path);
-    if(zoneBlock) return {blocked:true, hopNum:i, blockedAt:current.label, reason:zoneBlock};
-
-    // Router routing check: router must have a route to destination subnet
-    if(current.type === 'Router' && i > 0) {
-      if(!routerHasRoute(current, toNode, next)) {
-        return {
-          blocked: true,
-          hopNum: i,
-          blockedAt: current.label,
-          reason: `Router "${current.label}" hat keine Route zu ${toNode.ip||toNode.label}. Bitte Default-Gateway oder statische Route konfigurieren.`
-        };
-      }
-    }
-  }
-
-  // Firewall check
-  const fwBlock = isBlocked(fromNode, toNode, path);
-  if(fwBlock) return {blocked:true, hopNum:0, blockedAt:'Firewall', reason:fwBlock, hops:path.length-1};
-
-  return {blocked:false, hops: path.length - 1};
-}
-
-function routerHasRoute(routerNode, destNode, nextHopNode) {
-  // A router can forward if:
-  // 1. It has a Default-GW configured (and next hop is toward internet)
-  // 2. One of its interfaces is in the same subnet as destination
-  // 3. It has no IPs at all (unconfigured – allow optimistically)
-  const r = routerNode.routerCfg;
-  if(!r) return true; // unconfigured – don't block
-
-  const ifaces = Object.values(r.interfaces || {}).filter(i=>i.ip);
-  if(ifaces.length === 0) return true; // no IPs yet – don't block
-
-  const destSubnet = getSubnet(destNode.ip);
-
-  // Check if destination is directly reachable via an interface
-  for(const iface of ifaces) {
-    if(getSubnet(iface.ip) === destSubnet) return true;
-  }
-
-  // Check if default gateway is configured (can route to unknown subnets)
-  if(r.defaultGW && r.defaultGW.trim()) return true;
-
-  return false;
-}
-
-function checkZoneBlock(from, to, path) {
-  if(from.zone === to.zone) return null;
-  const hasFW = path.some(id=>nodes[id]&&nodes[id].type==='Firewall');
-  if(from.zone==='external'&&to.zone==='internal') return 'Extern→Intern: geblockt';
-  if(from.zone==='dmz'&&to.zone==='internal') return 'DMZ→Intern: geblockt';
-  return null;
-}
-
 function runTrace() {
   const fId=document.getElementById('traceFrom').value;
   const tId=document.getElementById('traceTo').value;
   if(!fId||!tId||fId===tId){log('Ungültige Auswahl – bitte zwei verschiedene Geräte wählen','err'); return;}
   const from=nodes[fId], to=nodes[tId];
   switchTab('log');
-  log(`Traceroute: ${from.label} → ${to.label}`,'info');
+  log(`Traceroute: ${from.label} (${from.ip||'?'}) → ${to.label} (${to.ip||'?'})`,'info');
 
   const path=findPath(fId,tId);
 
-  // ── Schritt 1: Physische Verbindung ──
+  // ── 1: Physische Verbindung ──
   if(path.length === 0){
-    log(`Traceroute: Kein Pfad – keine physische Verbindung zwischen ${from.label} und ${to.label}`,'err');
+    log(`Antwort von ${from.ip||from.label}: Zielhost nicht erreichbar.`,'err');
     return;
   }
 
-  // ── Schritt 2: Firewall / Zone / Routing ──
-  const blocked = isBlocked(from, to, path);
-  if(blocked){
-    log(`Traceroute: Pfad geblockt – ${blocked}`,'err');
-    // Show partial hops until block
-    path.forEach((id,i)=>{
+  // ── 2: Hop-by-Hop-Prüfung (gleiche Logik wie Ping) ──
+  const hopResult = simulatePingHops(fId, tId, path, 64);
+
+  if(hopResult.blocked) {
+    // Show hops up to the block, then * * * (real traceroute behavior)
+    const goodHops = path.slice(0, hopResult.hopNum + 1);
+    goodHops.forEach((id,i)=>{
       const n=nodes[id];
-      setTimeout(()=>{ log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`,'warn'); }, i*250);
+      setTimeout(()=>{ log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||getRouterDisplayIp(n)||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`, i < goodHops.length-1 ? 'ok' : 'warn'); }, i*250);
     });
-    setTimeout(()=>{ log(`  *  *  *  Anfrage abgelaufen (geblockt)`, 'err'); }, path.length*250+100);
+    setTimeout(()=>{
+      log(`  ${String(goodHops.length+1).padStart(2,' ')}  *  *  *  Zeitüberschreitung der Anforderung.`,'err');
+      log(`  Abbruch: ${hopResult.reason}`,'err');
+    }, goodHops.length*250+150);
     return;
   }
 
+  // ── 3: Erfolgreicher Trace ──
   path.forEach((id,i)=>{
     const n=nodes[id];
     setTimeout(()=>{
-      log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`,'ok');
+      log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||getRouterDisplayIp(n)||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`,'ok');
     }, i*300);
   });
   setTimeout(()=>{ log('Traceroute abgeschlossen.','info'); animatePath(path); }, path.length*300+100);
+}
+
+function getRouterDisplayIp(n) {
+  if(!n || !ROUTER_TYPES.includes(n.type) || !n.routerCfg) return null;
+  const first = Object.values(n.routerCfg.interfaces||{}).find(x=>x.ip);
+  return first ? first.ip : null;
 }
 
 function runScan() {
@@ -3597,24 +3548,45 @@ function simulatePingHops(fromId, toId, path, ttl) {
   const fromNode = nodes[fromId];
   const toNode   = nodes[toId];
 
-  if(!fromNode.ip) return {blocked:true, hopNum:0, blockedAt:fromNode.label, reason:'Keine IP konfiguriert'};
-  if(!toNode.ip)   return {blocked:true, hopNum:0, blockedAt:toNode.label,   reason:'Keine IP konfiguriert'};
+  if(!fromNode.ip) return {blocked:true, hopNum:0, blockedAt:fromNode.label, reason:'Keine IP konfiguriert', icmpType:'unreachable'};
+  if(!toNode.ip)   return {blocked:true, hopNum:0, blockedAt:toNode.label,   reason:'Keine IP konfiguriert', icmpType:'timeout'};
 
-  // Check overall reachability (subnet, zones)
+  // Overall reachability (subnet/zone rules)
   const overallBlock = isBlocked(fromNode, toNode, path);
-  if(overallBlock) return {blocked:true, hopNum:0, blockedAt:'Netzwerkregel', reason:overallBlock, hops:0};
+  if(overallBlock) {
+    // Firewall/Zone blocks drop silently → timeout
+    // Subnet-without-router: own host can't route → unreachable from own host
+    const isSubnetIssue = overallBlock.includes('Subnetz') || overallBlock.includes('Router fehlt');
+    return {
+      blocked:true, hopNum:0,
+      blockedAt: isSubnetIssue ? fromNode.label : 'Firewall/Zone',
+      fromIp: isSubnetIssue ? fromNode.ip : undefined,
+      reason: overallBlock,
+      icmpType: isSubnetIssue ? 'unreachable' : 'timeout',
+      hops:0
+    };
+  }
 
-  // Walk path hop by hop
+  // Hop-by-hop walk
   for(let i = 0; i < path.length - 1; i++) {
     const current = nodes[path[i]];
-    const next    = nodes[path[i+1]];
-    if(!current || !next) continue;
-    if(i >= ttl) return {blocked:true, hopNum:i, blockedAt:current.label, reason:'TTL abgelaufen (Routing-Schleife?)'};
+    if(!current) continue;
+    if(i >= ttl) return {blocked:true, hopNum:i, blockedAt:current.label, reason:'TTL abgelaufen (Routing-Schleife?)', icmpType:'unreachable'};
 
-    // At a router/L3Switch: must be configured and have a route
+    // Router/L3Switch must be configured and have a route
+    // FACT: a router without a route replies with ICMP "Destination Unreachable"
     if(ROUTER_TYPES.includes(current.type)) {
       const routeErr = routerCanForward(current, fromNode, toNode);
-      if(routeErr) return {blocked:true, hopNum:i, blockedAt:current.label, reason:routeErr};
+      if(routeErr) {
+        // Get router's IP (first configured interface) for realistic ICMP source
+        let routerIp = '';
+        if(current.routerCfg && current.routerCfg.interfaces) {
+          const firstIface = Object.values(current.routerCfg.interfaces).find(x=>x.ip);
+          if(firstIface) routerIp = firstIface.ip;
+        }
+        return {blocked:true, hopNum:i, blockedAt:current.label, fromIp:routerIp,
+                reason:routeErr, icmpType:'unreachable'};
+      }
     }
   }
 
@@ -4572,6 +4544,8 @@ document.addEventListener('keydown', e => {
     toggleProjekt();
   }
 });
+
+
 
 
 
