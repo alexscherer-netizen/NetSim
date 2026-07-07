@@ -353,6 +353,23 @@
   .term-line.info { color: var(--accent); }
   .term-line.warn { color: var(--warn); }
   .term-prompt { color: var(--accent2); }
+  .term-line.cmd { color: #c8d8f0; }
+  .term-input-line {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 8px; border-top: 1px solid rgba(255,255,255,0.08);
+    font-family: 'Share Tech Mono', monospace; font-size: 12px;
+  }
+  .term-cmd-prompt { color: var(--accent3); font-weight: 700; white-space: nowrap; }
+  #termInput {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text1); font-family: 'Share Tech Mono', monospace; font-size: 12px;
+    caret-color: var(--accent2); padding: 0;
+  }
+  #termInput::placeholder { color: var(--text2); opacity: 0.5; }
+  /* Konsole füllt den kompletten Tab und ist deutlich größer als das Protokoll */
+  #contentConsole { flex-direction: column; }
+  .console-terminal { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .console-body { flex: 1; max-height: none !important; min-height: 320px; }
 
   /* ── NETWORK ZONES ── */
   .zone-label {
@@ -1706,6 +1723,7 @@
       <div class="panel-tab" onclick="switchTab('tools')" id="tabTools">Tools</div>
       <div class="panel-tab" onclick="switchTab('val')" id="tabVal">⚡ Status</div>
       <div class="panel-tab" onclick="switchTab('log')" id="tabLog">Log</div>
+      <div class="panel-tab" onclick="switchTab('console')" id="tabConsole">⌨ Konsole</div>
     </div>
 
     <!-- CONFIG TAB -->
@@ -1861,14 +1879,36 @@
           <div class="term-dot" style="background:#ff5f56"></div>
           <div class="term-dot" style="background:#ffbd2e"></div>
           <div class="term-dot" style="background:#27c93f"></div>
-          <span style="margin-left:4px">NetSim Terminal</span>
+          <span style="margin-left:4px">NetSim Protokoll</span>
         </div>
         <div class="terminal-body" id="termBody">
-          <div class="term-line info">NetSim Pro v1.0 – Simulator bereit</div>
-          <div class="term-line">Netzwerk-Topologie leer.</div>
+          <div class="term-line info">NetSim Pro – Protokoll bereit</div>
+          <div class="term-line">Ping, Traceroute und Validierung werden hier protokolliert.</div>
         </div>
       </div>
       <button class="action-btn" onclick="clearLog()" style="margin-top:4px">Protokoll löschen</button>
+    </div>
+
+    <!-- KONSOLE TAB -->
+    <div class="panel-content" id="contentConsole" style="display:none; padding:8px">
+      <div class="terminal console-terminal">
+        <div class="terminal-header">
+          <div class="term-dot" style="background:#ff5f56"></div>
+          <div class="term-dot" style="background:#ffbd2e"></div>
+          <div class="term-dot" style="background:#27c93f"></div>
+          <span style="margin-left:4px">NetSim Konsole</span>
+          <span style="margin-left:auto; color:var(--text2); font-size:10px" onclick="cmdClear()" title="Konsole leeren" role="button">clear ⌫</span>
+        </div>
+        <div class="terminal-body console-body" id="consoleBody">
+          <div class="term-line info">NetSim Pro – Konsole bereit</div>
+          <div class="term-line">Tippe <span class="term-prompt">help</span> für alle Befehle · <span class="term-prompt">select &lt;gerät&gt;</span> wählt das Quellgerät.</div>
+        </div>
+        <div class="term-input-line">
+          <span class="term-cmd-prompt" id="termPrompt">netsim&gt;</span>
+          <input id="termInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 placeholder="Befehl eingeben – 'help' für Hilfe" onkeydown="onConsoleKey(event)">
+        </div>
+      </div>
     </div>
 
     <!-- VALIDATION TAB -->
@@ -3186,6 +3226,7 @@ function redrawEdges() {
 function deleteNode(id) {
   if(!nodes[id]) return;
   log(`Gerät gelöscht: ${nodes[id].label}`,'warn');
+  if(activeDeviceId === id) { activeDeviceId = null; refreshConsolePrompt(); }
   nodes[id].el.remove();
   delete BADGE_REASONS[id];
   delete nodes[id];
@@ -3745,12 +3786,14 @@ function animatePath(path) {
 /* ═══════════════════════════════════════════════
    LOG
 ═══════════════════════════════════════════════ */
-function log(msg, type='') {
+function log(msg, type='', raw=false) {
   const body=document.getElementById('termBody');
   const div=document.createElement('div');
   div.className='term-line '+(type||'');
-  const ts=new Date().toLocaleTimeString('de',{hour12:false});
-  div.innerHTML=`<span class="term-prompt">[${ts}]</span> `;
+  if(!raw) {
+    const ts=new Date().toLocaleTimeString('de',{hour12:false});
+    div.innerHTML=`<span class="term-prompt">[${ts}]</span> `;
+  }
   div.appendChild(document.createTextNode(msg));
   body.appendChild(div);
   body.scrollTop=body.scrollHeight;
@@ -3758,6 +3801,429 @@ function log(msg, type='') {
   const tab=document.getElementById('tabLog');
   if(!tab.classList.contains('active')) tab.style.color='var(--accent2)';
 }
+/* CLI-Ausgabe ohne Zeitstempel – schreibt in die separate Konsole */
+function cout(msg='', type='') {
+  const body=document.getElementById('consoleBody');
+  if(!body) return;
+  const div=document.createElement('div');
+  div.className='term-line '+(type||'');
+  div.appendChild(document.createTextNode(msg));
+  body.appendChild(div);
+  body.scrollTop=body.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════════
+   INTERAKTIVE KONSOLE (Netzwerk-CLI)
+   Nutzt die bestehende Simulation (findPath,
+   simulatePingHops, nodes …) für realitätsnahe
+   Ausgaben im Windows-/Cisco-/Linux-Stil.
+═══════════════════════════════════════════════ */
+let activeDeviceId = null;          // aktuell gewähltes Quellgerät
+let cmdHistory = [];                // Befehlsverlauf
+let cmdHistIdx = -1;
+
+/* Bits → dezimale Subnetzmaske, z.B. 24 → 255.255.255.0 */
+function maskToDecimal(maskStr) {
+  const bits = maskBits(maskStr);
+  const m = bits >= 32 ? 0xFFFFFFFF : ((0xFFFFFFFF << (32 - bits)) >>> 0);
+  return intToIp(m >>> 0);
+}
+/* Deterministische Pseudo-MAC aus Node-ID (nur Anschauung) */
+function pseudoMac(id) {
+  let h = 0;
+  for(let i=0;i<id.length;i++){ h = (h*31 + id.charCodeAt(i)) & 0xFFFFFFFF; }
+  const b = i => ((h >> (i*5)) & 0xFF);
+  return ['02', b(0), b(1), b(2), b(3), b(4)]
+    .map(x => (typeof x==='string'?x:x.toString(16).padStart(2,'0'))).join('-').toUpperCase();
+}
+/* Aktives Gerät ermitteln (oder null) */
+function activeDevice() { return activeDeviceId ? nodes[activeDeviceId] : null; }
+
+/* Prompt-Label aktualisieren */
+function refreshConsolePrompt() {
+  const p = document.getElementById('termPrompt');
+  if(!p) return;
+  const d = activeDevice();
+  p.textContent = (d ? d.label : 'netsim') + '>';
+}
+
+/* Gerät per Name / IP / Teilname auflösen → node oder {error} */
+function resolveDevice(arg) {
+  if(!arg) return { error: 'Kein Ziel angegeben' };
+  const q = arg.trim().toLowerCase();
+  const all = Object.values(nodes).filter(n => !ZONE_TYPES.includes(n.type));
+  // 1) exakter Name
+  let hit = all.find(n => n.label.toLowerCase() === q);
+  if(hit) return { node: hit };
+  // 2) exakte IP (Endgerät oder Router-Interface)
+  hit = all.find(n => n.ip === arg.trim());
+  if(hit) return { node: hit };
+  hit = all.find(n => ROUTER_TYPES.includes(n.type) && n.routerCfg &&
+        Object.values(n.routerCfg.interfaces||{}).some(i => i.ip === arg.trim()));
+  if(hit) return { node: hit };
+  // 3) eindeutiger Teilname
+  const partial = all.filter(n => n.label.toLowerCase().includes(q));
+  if(partial.length === 1) return { node: partial[0] };
+  if(partial.length > 1) return { error: `Mehrdeutig: ${partial.map(n=>n.label).join(', ')}` };
+  return { error: `Gerät "${arg}" nicht gefunden` };
+}
+
+/* Zeigt eine IP zu einer Ziel-Referenz (Name→IP-Auflösung) */
+function targetIp(node, arg) {
+  // Wenn das Argument selbst eine IP ist, diese nehmen (z.B. Router-Interface-IP)
+  if(ipToInt(arg) !== null) return arg;
+  if(ROUTER_TYPES.includes(node.type) && node.routerCfg) {
+    const first = Object.values(node.routerCfg.interfaces||{}).find(i=>i.ip);
+    return first ? first.ip : node.ip;
+  }
+  return node.ip;
+}
+
+/* ── Befehl ausführen ── */
+function execConsole(line) {
+  const raw = line.trim();
+  const d = activeDevice();
+  // Eingabe im Terminal spiegeln
+  cout((d ? d.label : 'netsim') + '> ' + raw, 'cmd');
+  if(!raw) return;
+
+  const parts = raw.split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+  const args = parts.slice(1);
+  const rest = raw.slice(parts[0].length).trim();
+
+  switch(cmd) {
+    case 'help': case '?':        return cmdHelp();
+    case 'clear': case 'cls':     return cmdClear();
+    case 'list': case 'devices':  return cmdList();
+    case 'select': case 'use':    return cmdSelect(rest);
+    case 'whoami':                return cmdWhoami();
+    case 'ipconfig': case 'ifconfig': return cmdIpconfig(args);
+    case 'ping':                  return cmdPing(rest);
+    case 'tracert': case 'traceroute': return cmdTracert(rest);
+    case 'arp':                   return cmdArp();
+    case 'nslookup': case 'dig':  return cmdNslookup(rest);
+    case 'route':                 return cmdRoute();
+    case 'scan':                  return cmdScan(rest);
+    case 'show':                  return cmdShow(args);
+    default:
+      cout(`Unbekannter Befehl: ${cmd}. Tippe 'help' für die Befehlsübersicht.`, 'err');
+  }
+}
+
+function cmdHelp() {
+  cout('Verfügbare Befehle:', 'info');
+  const rows = [
+    ['select <gerät>',  'Quellgerät wählen (Name oder IP)'],
+    ['whoami',          'aktuelles Quellgerät anzeigen'],
+    ['list',            'alle Geräte im Netz auflisten'],
+    ['ipconfig',        'IP, Maske, Gateway des Quellgeräts (Windows-Stil)'],
+    ['ping <ziel>',     'Erreichbarkeit prüfen (Gateway/NAT/Subnetz)'],
+    ['tracert <ziel>',  'Route zum Ziel (nur Layer-3-Hops)'],
+    ['arp',             'ARP-Tabelle (Nachbarn im selben Subnetz)  [arp -a]'],
+    ['nslookup <name>', 'Name → IP auflösen'],
+    ['route',           'Routing-Tabelle des Quellgeräts  [route print]'],
+    ['scan [ziel]',     'erreichbare Geräte / offene Dienste'],
+    ['show ip int brief','Interface-Übersicht eines Routers (Cisco-Stil)'],
+    ['clear',           'Konsole leeren  [cls]'],
+    ['help',            'diese Übersicht  [?]'],
+  ];
+  rows.forEach(([c,desc]) => cout('  ' + c.padEnd(20,' ') + desc));
+  cout('Ziel darf Gerätename oder IP sein. Pfeil ↑/↓ = Verlauf.', 'info');
+}
+
+function cmdClear() {
+  const b=document.getElementById('consoleBody');
+  if(b) b.innerHTML = '';
+}
+
+function cmdList() {
+  const all = Object.values(nodes).filter(n => !ZONE_TYPES.includes(n.type));
+  if(all.length === 0) { cout('Keine Geräte im Netz.', 'warn'); return; }
+  cout('Geräte im Netzwerk:', 'info');
+  cout('  ' + 'Name'.padEnd(16) + 'Typ'.padEnd(13) + 'IP'.padEnd(17) + 'Zone');
+  cout('  ' + '─'.repeat(52));
+  all.forEach(n => {
+    let ip = n.ip || '–';
+    if(ROUTER_TYPES.includes(n.type) && n.routerCfg) {
+      const ips = Object.values(n.routerCfg.interfaces||{}).filter(i=>i.ip).map(i=>i.ip);
+      if(ips.length) ip = ips[0] + (ips.length>1?` (+${ips.length-1})`:'');
+    }
+    cout('  ' + n.label.padEnd(16) + n.type.padEnd(13) + ip.padEnd(17) + (n.zone||'–'));
+  });
+  cout(`  ${all.length} Gerät(e).`, 'info');
+}
+
+function cmdSelect(arg) {
+  const r = resolveDevice(arg);
+  if(r.error) { cout(r.error, 'err'); return; }
+  activeDeviceId = r.node.id;
+  refreshConsolePrompt();
+  const n = r.node;
+  const ipInfo = ROUTER_TYPES.includes(n.type) ? '(Router)' : (n.ip || 'keine IP');
+  cout(`Quellgerät: ${n.label} ${ipInfo}`, 'ok');
+}
+
+function cmdWhoami() {
+  const d = activeDevice();
+  if(!d) { cout("Kein Quellgerät gewählt. Nutze 'select <gerät>'.", 'warn'); return; }
+  cout(`${d.label} (${d.ip || 'keine IP'}) · Zone: ${d.zone}`, 'info');
+}
+
+function requireActive() {
+  const d = activeDevice();
+  if(!d) { cout("Kein Quellgerät gewählt. Nutze zuerst 'select <gerät>'.", 'err'); return null; }
+  return d;
+}
+
+function cmdIpconfig() {
+  const d = requireActive(); if(!d) return;
+  cout('', ''); 
+  if(ROUTER_TYPES.includes(d.type) && d.routerCfg) {
+    cout(`${d.label} – Interface-Konfiguration:`, 'info');
+    const myEdges = edges.filter(e => e.from===d.id || e.to===d.id);
+    myEdges.forEach((e,i) => {
+      const iface = (d.routerCfg.interfaces||{})[e.id] || {};
+      cout(`Ethernet-Adapter eth${i}:`);
+      cout(`   IPv4-Adresse . . . . . . . . . . : ${iface.ip || '(nicht gesetzt)'}`);
+      if(iface.ip) cout(`   Subnetzmaske . . . . . . . . . . : ${maskToDecimal(iface.mask)}`);
+    });
+    if(d.routerCfg.defaultGW) cout(`   Standardgateway (Route) . . . . . : ${d.routerCfg.defaultGW}`);
+    cout(`   NAT  . . . . . . . . . . . . . . . : ${d.routerCfg.nat ? 'aktiviert' : 'deaktiviert'}`);
+    return;
+  }
+  cout('Windows-IP-Konfiguration', 'info');
+  cout('');
+  cout(`Ethernet-Adapter "${d.label}":`);
+  cout(`   IPv4-Adresse . . . . . . . . . . : ${d.ip || '(nicht gesetzt)'}`);
+  if(d.ip) cout(`   Subnetzmaske . . . . . . . . . . : ${maskToDecimal(d.mask)}`);
+  cout(`   Standardgateway  . . . . . . . . : ${d.gw || '(nicht gesetzt)'}`);
+}
+
+function cmdPing(arg) {
+  const d = requireActive(); if(!d) return;
+  const r = resolveDevice(arg);
+  if(r.error) { cout(`Ping-Anforderung konnte Host "${arg}" nicht finden.`, 'err'); return; }
+  const to = r.node;
+  if(to.id === d.id) { cout('Quelle und Ziel sind identisch.', 'warn'); return; }
+  const dstIp = targetIp(to, arg);
+  cout('');
+  cout(`Ping wird ausgeführt für ${to.label} [${dstIp||'keine IP'}] mit 32 Bytes Daten:`, 'info');
+
+  const path = findPath(d.id, to.id);
+  if(path.length === 0) {
+    cout(`Antwort von ${d.ip||d.label}: Zielhost nicht erreichbar.`, 'err');
+    cout('(Keine physische Verbindung – ARP erfolglos)', 'warn');
+    return;
+  }
+  if(!d.ip) { cout(`${d.label} hat keine IP konfiguriert.`, 'err'); return; }
+  if(!to.ip) { cout(`${to.label} hat keine IP konfiguriert.`, 'err'); return; }
+
+  const ttl = 128;
+  const res = simulatePingHops(d.id, to.id, path, ttl);
+  if(res.blocked) {
+    if(res.icmpType === 'unreachable') {
+      cout(`Antwort von ${res.fromIp||d.ip}: Zielhost nicht erreichbar.`, 'err');
+    } else {
+      cout('Zeitüberschreitung der Anforderung.', 'err');
+    }
+    cout(`  Grund: ${res.reason}`, 'warn');
+    cout('');
+    cout(`Ping-Statistik für ${dstIp}:`, 'info');
+    cout('    Pakete: Gesendet = 4, Empfangen = 0, Verloren = 4 (100% Verlust)');
+    animatePath(path.slice(0, (res.hopNum||0) + 1));
+    return;
+  }
+  const ms = Array.from({length:4}, ()=>Math.floor(Math.random()*(res.hops*2+3)+1));
+  ms.forEach(t => cout(`Antwort von ${dstIp}: Bytes=32 Zeit=${t}ms TTL=${ttl - res.hops}`, 'ok'));
+  const avg = Math.round(ms.reduce((a,b)=>a+b)/4);
+  cout('');
+  cout(`Ping-Statistik für ${dstIp}:`, 'info');
+  cout('    Pakete: Gesendet = 4, Empfangen = 4, Verloren = 0 (0% Verlust),');
+  cout(`    ca. Zeitangaben in Millisek.: Minimum = ${Math.min(...ms)}ms, Maximum = ${Math.max(...ms)}ms, Mittelwert = ${avg}ms`);
+  animatePath(path);
+}
+
+function cmdTracert(arg) {
+  const d = requireActive(); if(!d) return;
+  const r = resolveDevice(arg);
+  if(r.error) { cout(`Ziel "${arg}" nicht gefunden.`, 'err'); return; }
+  const to = r.node;
+  if(to.id === d.id) { cout('Quelle und Ziel sind identisch.', 'warn'); return; }
+  const dstIp = targetIp(to, arg);
+  const path = findPath(d.id, to.id);
+  cout('');
+  cout(`Route wird verfolgt zu ${to.label} [${dstIp||'?'}]`, 'info');
+  cout('über maximal 30 Abschnitte:');
+  cout('');
+  if(path.length === 0) { cout(`${d.label}: Zielhost nicht erreichbar.`, 'err'); return; }
+
+  const res = simulatePingHops(d.id, to.id, path, 128);
+  // Nur Layer-3-Hops (Router) + Ziel anzeigen
+  const l3 = path.slice(1).filter((id,idx,arr) =>
+    (nodes[id] && ROUTER_TYPES.includes(nodes[id].type)) || idx === arr.length-1);
+
+  if(res.blocked) {
+    const good = path.slice(1, (res.hopNum||0) + 1)
+      .filter(id => nodes[id] && ROUTER_TYPES.includes(nodes[id].type));
+    good.forEach((id,i) => {
+      const n = nodes[id];
+      cout(`  ${String(i+1).padStart(2)}   ${Math.floor(Math.random()*10+1)} ms   ${(n.ip||getRouterDisplayIp(n)||'*')}   ${n.label}`, 'ok');
+    });
+    cout(`  ${String(good.length+1).padStart(2)}   *    *    *    Zeitüberschreitung der Anforderung.`, 'err');
+    cout(`  Abbruch: ${res.reason}`, 'warn');
+    return;
+  }
+  l3.forEach((id,i) => {
+    const n = nodes[id];
+    cout(`  ${String(i+1).padStart(2)}   ${Math.floor(Math.random()*10+1)} ms   ${(n.ip||getRouterDisplayIp(n)||'*')}   ${n.label}`, 'ok');
+  });
+  cout('');
+  cout('Ablaufverfolgung beendet.', 'info');
+  animatePath(path);
+}
+
+function cmdArp() {
+  const d = requireActive(); if(!d) return;
+  if(!d.ip) { cout(`${d.label} hat keine IP – keine ARP-Tabelle.`, 'warn'); return; }
+  cout('');
+  cout(`Schnittstelle: ${d.ip}`, 'info');
+  cout('  Internetadresse       Physische Adresse      Typ');
+  // L2-Nachbarn: gleiches Subnetz + physischer Pfad ohne dazwischenliegenden Router
+  const neighbors = [];
+  Object.values(nodes).forEach(n => {
+    if(n.id === d.id || ZONE_TYPES.includes(n.type)) return;
+    // Endgeräte mit IP
+    if(n.ip && sameSubnet(d.ip, d.mask, n.ip, n.mask)) {
+      const p = findPath(d.id, n.id);
+      if(p.length && !p.slice(1,-1).some(id => ROUTER_TYPES.includes(nodes[id].type)))
+        neighbors.push({ ip:n.ip, mac:pseudoMac(n.id) });
+    }
+    // Router-Interfaces im selben Subnetz (= das Gateway)
+    if(ROUTER_TYPES.includes(n.type) && n.routerCfg) {
+      Object.entries(n.routerCfg.interfaces||{}).forEach(([k,iface]) => {
+        if(iface.ip && sameSubnet(d.ip, d.mask, iface.ip, iface.mask)) {
+          const p = findPath(d.id, n.id);
+          if(p.length && !p.slice(1,-1).some(id => ROUTER_TYPES.includes(nodes[id].type)))
+            neighbors.push({ ip:iface.ip, mac:pseudoMac(n.id+k) });
+        }
+      });
+    }
+  });
+  if(neighbors.length === 0) { cout('  (keine Einträge – keine Nachbarn im selben Subnetz)', 'warn'); return; }
+  // Dedupe nach IP
+  const seen = new Set();
+  neighbors.filter(e => !seen.has(e.ip) && seen.add(e.ip))
+    .sort((a,b)=> (ipToInt(a.ip)||0)-(ipToInt(b.ip)||0))
+    .forEach(e => cout('  ' + e.ip.padEnd(22) + e.mac.padEnd(23) + 'dynamisch'));
+}
+
+function cmdNslookup(arg) {
+  if(!arg) { cout('Syntax: nslookup <gerätename|ip>', 'err'); return; }
+  const dnsNode = Object.values(nodes).find(n => n.type === 'DNS');
+  cout('');
+  cout(`Server:  ${dnsNode ? dnsNode.label : 'UnKnown'}`, 'info');
+  cout(`Address: ${dnsNode ? (dnsNode.ip||'?') : '(kein DNS-Server im Netz)'}`);
+  cout('');
+  const r = resolveDevice(arg);
+  if(r.error || !r.node.ip) {
+    cout(`*** Name "${arg}" konnte nicht aufgelöst werden (NXDOMAIN).`, 'err');
+    return;
+  }
+  cout(`Name:    ${r.node.label}`, 'ok');
+  cout(`Address: ${r.node.ip}`, 'ok');
+}
+
+function cmdRoute() {
+  const d = requireActive(); if(!d) return;
+  cout('');
+  cout('Aktive Routen:', 'info');
+  cout('Netzwerkziel        Netzmaske          Gateway         Schnittstelle');
+  if(ROUTER_TYPES.includes(d.type) && d.routerCfg) {
+    const myEdges = edges.filter(e => e.from===d.id || e.to===d.id);
+    myEdges.forEach((e,i) => {
+      const iface = (d.routerCfg.interfaces||{})[e.id] || {};
+      if(iface.ip) {
+        const net = networkOf(iface.ip, maskBits(iface.mask));
+        cout(intToIp(net).padEnd(20) + maskToDecimal(iface.mask).padEnd(19) + 'Auf Verbindung'.padEnd(16) + `eth${i} (${iface.ip})`);
+      }
+    });
+    if(d.routerCfg.defaultGW)
+      cout('0.0.0.0'.padEnd(20) + '0.0.0.0'.padEnd(19) + d.routerCfg.defaultGW.padEnd(16) + '(Default-Route)');
+    return;
+  }
+  if(!d.ip) { cout('(Keine IP konfiguriert.)', 'warn'); return; }
+  const net = networkOf(d.ip, maskBits(d.mask));
+  if(d.gw)
+    cout('0.0.0.0'.padEnd(20) + '0.0.0.0'.padEnd(19) + d.gw.padEnd(16) + d.ip);
+  cout(intToIp(net).padEnd(20) + maskToDecimal(d.mask).padEnd(19) + 'Auf Verbindung'.padEnd(16) + d.ip);
+}
+
+function cmdScan(arg) {
+  const d = requireActive(); if(!d) return;
+  if(!d.ip) { cout(`${d.label} hat keine IP.`, 'err'); return; }
+  cout('');
+  if(arg) {
+    // Einzelziel: "Portscan"-Kurzform → Erreichbarkeit
+    const r = resolveDevice(arg);
+    if(r.error) { cout(r.error, 'err'); return; }
+    const p = findPath(d.id, r.node.id);
+    const reach = p.length && r.node.ip && !simulatePingHops(d.id, r.node.id, p, 64).blocked;
+    cout(`Scan ${r.node.label} [${r.node.ip||'?'}]: ${reach ? 'erreichbar (Host aktiv)' : 'nicht erreichbar'}`, reach?'ok':'err');
+    return;
+  }
+  cout(`Netzwerk-Scan von ${d.label} (${d.ip}) …`, 'info');
+  const reachable = Object.values(nodes).filter(t => {
+    if(t.id === d.id || ZONE_TYPES.includes(t.type)) return false;
+    const p = findPath(d.id, t.id);
+    return p.length && d.ip && t.ip && !simulatePingHops(d.id, t.id, p, 64).blocked;
+  });
+  if(reachable.length === 0) { cout('  Keine erreichbaren Geräte.', 'warn'); return; }
+  reachable.sort((a,b)=>(ipToInt(a.ip)||0)-(ipToInt(b.ip)||0))
+    .forEach(t => cout('  ' + (t.ip||'?').padEnd(18) + '● aktiv   ' + t.label, 'ok'));
+  cout(`  ${reachable.length} Gerät(e) erreichbar.`, 'info');
+}
+
+function cmdShow(args) {
+  const sub = args.map(a=>a.toLowerCase()).join(' ');
+  const d = requireActive(); if(!d) return;
+  if(sub.startsWith('ip int') || sub.startsWith('ip interface') || sub === 'ip int brief' || sub.startsWith('ip int brief')) {
+    if(!ROUTER_TYPES.includes(d.type)) { cout(`${d.label} ist kein Router – 'show ip int brief' gilt nur für Router/L3-Switches.`, 'err'); return; }
+    cout('');
+    cout('Interface'.padEnd(14) + 'IP-Address'.padEnd(17) + 'Status'.padEnd(22) + 'Protocol', 'info');
+    const myEdges = edges.filter(e => e.from===d.id || e.to===d.id);
+    if(myEdges.length === 0) { cout('(keine Interfaces – Router ist nicht verkabelt)', 'warn'); return; }
+    myEdges.forEach((e,i) => {
+      const iface = (d.routerCfg.interfaces||{})[e.id] || {};
+      const ip = iface.ip || 'unassigned';
+      const up = !!iface.ip;
+      cout(`eth${i}`.padEnd(14) + ip.padEnd(17) + (up?'up':'administratively down').padEnd(22) + (up?'up':'down'));
+    });
+    return;
+  }
+  cout(`Unbekannter show-Befehl. Verfügbar: 'show ip int brief'.`, 'err');
+}
+
+/* ── Tastatur: Enter ausführen, Pfeil ↑/↓ Verlauf ── */
+function onConsoleKey(ev) {
+  const input = ev.target;
+  if(ev.key === 'Enter') {
+    const line = input.value;
+    if(line.trim()) { cmdHistory.push(line); cmdHistIdx = cmdHistory.length; }
+    input.value = '';
+    switchTab('console');
+    execConsole(line);
+  } else if(ev.key === 'ArrowUp') {
+    ev.preventDefault();
+    if(cmdHistIdx > 0) { cmdHistIdx--; input.value = cmdHistory[cmdHistIdx]; }
+  } else if(ev.key === 'ArrowDown') {
+    ev.preventDefault();
+    if(cmdHistIdx < cmdHistory.length - 1) { cmdHistIdx++; input.value = cmdHistory[cmdHistIdx]; }
+    else { cmdHistIdx = cmdHistory.length; input.value = ''; }
+  }
+}
+
+
 
 function clearLog() {
   document.getElementById('termBody').innerHTML='<div class="term-line info">Protokoll geleert.</div>';
@@ -3767,15 +4233,16 @@ function clearLog() {
    TABS
 ═══════════════════════════════════════════════ */
 function switchTab(t) {
-  ['config','tools','val','log'].forEach(n=>{
+  ['config','tools','val','log','console'].forEach(n=>{
     const tabEl=document.getElementById('tab'+n.charAt(0).toUpperCase()+n.slice(1));
     const contEl=document.getElementById('content'+n.charAt(0).toUpperCase()+n.slice(1));
     if(tabEl) tabEl.classList.toggle('active',n===t);
-    if(contEl) contEl.style.display=n===t?'block':'none';
+    if(contEl) contEl.style.display = n===t ? (n==='console'?'flex':'block') : 'none';
   });
   if(t==='log') document.getElementById('tabLog').style.color='';
   if(t==='tools') updateSelects();
   if(t==='val') runValidation();
+  if(t==='console') { const i=document.getElementById('termInput'); if(i) setTimeout(()=>i.focus(),50); }
 }
 
 /* ═══════════════════════════════════════════════
@@ -3808,6 +4275,7 @@ function clearCanvas() {
   // Remove label elements (inkl. Event-Listener-Cleanup)
   labelNodes.forEach(l=>{ if(l.cleanup) l.cleanup(); if(l.el) l.el.remove(); });
   nodes={}; edges=[]; linkNets={}; labelNodes=[]; nodeCounter=0; edgeCounter=0; labelCounter=0; selectedNode=null; rewardShown=false; connectFirst=null; dragState=null;
+  activeDeviceId=null; refreshConsolePrompt();
   document.getElementById('mainCanvas').innerHTML='';
   document.getElementById('noSelectionMsg').style.display='block';
   document.getElementById('deviceConfig').style.display='none';
@@ -4496,6 +4964,7 @@ function deserializeNetwork(data) {
   labelNodes.forEach(l => { if(l.cleanup) l.cleanup(); if(l.el) l.el.remove(); });
   labelNodes = []; labelCounter = 0;
   nodes = {}; edges = [];
+  activeDeviceId = null; refreshConsolePrompt();
   document.getElementById('mainCanvas').innerHTML = '';
   document.getElementById('noSelectionMsg').style.display = 'block';
   document.getElementById('deviceConfig').style.display = 'none';
