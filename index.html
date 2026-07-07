@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NetSim Pro – Netzwerk Simulator</title>
+<meta name="theme-color" content="#0a0e1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NetSim Pro">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABkklEQVR42u1Xq3aEMBCd7OFERDQKUz5hBRp+K9+R3wIdwSegUDEITCv2ZJsOeUyAdkU7huwSMo975xEm3t4/4IVygxfL3zGgtRu0dqMZENt8RnloDQBQ5TYbyXcHrsMcVCT65mchWIc5qjzzXrsFdqiiKsaersP89Nit3T73FH0Drd20kVyRI4As1L5y0Tc75dgg//+c8igERnIwksM4Laq71/oI8bp7rcdpUSnIAABYrBL6H7rDSpVTCJrlgOgbGIevSIzTomKHPaGx36FJSUUhoOgbMPDAsrO1dutIzmsjuRKQVx7lgM9iLOO0qNZuOhZ6TDo/Uy4rxUbynRGt3Yp4croX+EZQ0q0oCyjYHcmQEKRV7gNcdPBvA1x19oF9bG/KoUvacYgTpziQY27MiFDVTGUUKQKUYhJKUQzHqVJ8tA9QSjFLTcWhNhzzDrdn34hUJG6laUMV10lzZzDKvaB0IPH35YoUK7mYUHmBvfbnTDySsSM3o5KhNDRd+0ZUR/A9w41fv5jgkF8Cwf/d8Er5BOKSDhDwrU1IAAAAAElFTkSuQmCC">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,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">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap');
 
@@ -2085,7 +2091,7 @@
           </div>
           <div class="legend-row">
             <span class="legend-icon">⚠️</span>
-            <div><div class="legend-name">Extern → DMZ</div><div class="legend-desc">Teilweise – nur Port 80 (HTTP) und 443 (HTTPS) erlaubt</div></div>
+            <div><div class="legend-name">Extern → DMZ</div><div class="legend-desc">Erlaubt (vereinfacht) – reale Firewalls beschränken hier auf die benötigten Ports, z.B. 80 (HTTP)/443 (HTTPS) für Webserver. Diese Simulation prüft Zonen, keine Ports.</div></div>
           </div>
           <div class="legend-row">
             <span class="legend-icon">🚫</span>
@@ -2175,6 +2181,59 @@ let labelNodes = [];  // floating text labels [{id,x,y,text,el}]
 let labelCounter = 0;
 let rewardShown = false; // prevent repeated reward popups
 
+/* ── HTML-Escaping für Nutzereingaben (Gerätenamen etc.) ── */
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── IP/Subnetz-Rechnung (maskenbewusst, /0–/32) ── */
+function ipToInt(ip) {
+  if(!ip || typeof ip !== 'string') return null;
+  const p = ip.trim().split('.');
+  if(p.length !== 4) return null;
+  let v = 0;
+  for(const o of p) {
+    if(!/^\d{1,3}$/.test(o)) return null;
+    const n = Number(o);
+    if(n < 0 || n > 255) return null;
+    v = v * 256 + n;
+  }
+  return v;
+}
+function intToIp(v) {
+  return [(v>>>24)&255,(v>>>16)&255,(v>>>8)&255,v&255].join('.');
+}
+/* Maskenstring '/24 – 255.255.255.0' → 24 */
+function maskBits(maskStr) {
+  const m = /^\/(\d{1,2})/.exec(String(maskStr||'').trim());
+  const b = m ? parseInt(m[1]) : 24;
+  return (b >= 0 && b <= 32) ? b : 24;
+}
+function networkOf(ip, bits) {
+  const v = ipToInt(ip);
+  if(v === null) return null;
+  if(bits <= 0) return 0;
+  const mask = bits >= 32 ? 0xFFFFFFFF : ((0xFFFFFFFF << (32 - bits)) >>> 0);
+  return (v & mask) >>> 0;
+}
+/* Liegt ip im Netz von refIp/bits? */
+function ipInNetwork(ip, refIp, bits) {
+  const a = networkOf(ip, bits), b = networkOf(refIp, bits);
+  return a !== null && b !== null && a === b;
+}
+/* Zwei Hosts im selben Subnetz (beide Sichtweisen, maskenbewusst) */
+function sameSubnet(aIp, aMask, bIp, bMask) {
+  return ipInNetwork(bIp, aIp, maskBits(aMask)) && ipInNetwork(aIp, bIp, maskBits(bMask));
+}
+/* '192.168.1.10','/24 – …' → '192.168.1.0/24' */
+function networkLabel(ip, maskStr) {
+  const bits = maskBits(maskStr);
+  const n = networkOf(ip, bits);
+  return n === null ? null : intToIp(n) + '/' + bits;
+}
+
 const ICONS = {
   PC:'🖥️', Laptop:'💻', Server:'🗄️', Phone:'📱',
   Switch:'🔀', L3Switch:'🔁', Router:'📡', Firewall:'🛡️', AccessPoint:'📶',
@@ -2190,15 +2249,6 @@ const DEFAULT_IPS = {
   Internet:'203.0.113.1', Cloud:'10.0.0.1', DNS:'8.8.8.8',
   ZoneInternal:'', ZoneDMZ:'', ZoneExternal:''
 };
-
-// Generate a random "placeholder" IP for devices that need config
-// Uses a clearly fake range so user knows it must be changed
-function randomPlaceholderIP() {
-  const a = Math.floor(Math.random()*99)+100; // 100-198
-  const b = Math.floor(Math.random()*254)+1;
-  const c = Math.floor(Math.random()*254)+1;
-  return `???.???.${String(a).padStart(3,'?')}.${String(b).padStart(3,'?')}`;
-}
 
 // For routers/firewalls: mark n.ip as empty so they show "nicht konfiguriert"
 function needsManualIP(type) {
@@ -2307,7 +2357,7 @@ function addNode(type, x, y, overrides={}) {
     mask: overrides.mask || '/24 – 255.255.255.0',
     gw: overrides.gw || '',
     vlan: overrides.vlan || '1',
-    zone: overrides.zone || (type==='Internet'||type==='ZoneExternal'?'external':type==='ZoneDMZ'?'dmz':'internal'),
+    zone: overrides.zone || (type==='Internet'||type==='Cloud'||type==='DNS'||type==='ZoneExternal'?'external':type==='ZoneDMZ'?'dmz':'internal'),
     x, y
   };
 
@@ -2343,8 +2393,8 @@ function renderNode(node) {
       <span class="node-status" style="background:${zoneColor};box-shadow:0 0 6px ${zoneColor}"></span>
       <span class="node-emoji">${ICONS[node.type]||'📦'}</span>
     </div>
-    <div class="node-label">${node.label}</div>
-    <div class="node-ip">${node.ip||''}</div>
+    <div class="node-label">${esc(node.label)}</div>
+    <div class="node-ip">${esc(node.ip||'')}</div>
   `;
 
   // Dragging – uses global dragState (single document listener, no accumulation)
@@ -2370,10 +2420,10 @@ function renderNode(node) {
   el.addEventListener('mouseenter', e=>{
     const t = document.getElementById('tooltip');
     const reason = BADGE_REASONS[node.id];
-    let txt = `${node.label}`;
-    if(node.ip) txt += ` | ${node.ip}`;
+    let txt = `${esc(node.label)}`;
+    if(node.ip) txt += ` | ${esc(node.ip)}`;
     txt += ` | Zone: ${node.zone}`;
-    if(reason) txt += `\n⚠ ${reason}`;
+    if(reason) txt += `\n⚠ ${esc(reason)}`;
     t.innerHTML = txt.replace(/\n/g, '<br>');
     t.style.display='block';
   });
@@ -2452,7 +2502,7 @@ function showConfig(id) {
   const connCount = edges.filter(e=>e.from===id||e.to===id).length;
   const conns = edges.filter(e=>e.from===id||e.to===id).map(e=>{
     const other = e.from===id?e.to:e.from;
-    return nodes[other]?`<div style="padding:2px 0">⟷ ${nodes[other].label}</div>`:'';
+    return nodes[other]?`<div style="padding:2px 0">⟷ ${esc(nodes[other].label)}</div>`:'';
   }).join('');
   const portInfo = isClient
     ? `<div style="font-size:10px;color:${connCount>=1?'var(--danger)':'var(--accent3)'};margin-bottom:6px;padding:3px 6px;background:rgba(${connCount>=1?'255,51,85':'57,255,20'},0.08);border-radius:3px;border:1px solid rgba(${connCount>=1?'255,51,85':'57,255,20'},0.2)">
@@ -2470,17 +2520,20 @@ function suggestRouterIP(peer, isExternal, existingInterfaces) {
       const parts = peer.ip.split('.');
       if(parts.length === 4) {
         const host = parseInt(parts[3]);
-        // Use a different host number from the peer
-        const newHost = host === 1 ? 2 : host === 254 ? 253 : 2;
+        // Anderen Host als der Peer vorschlagen (nie dieselbe IP)
+        const newHost = host === 2 ? 3 : 2;
         return `${parts[0]}.${parts[1]}.${parts[2]}.${newHost}`;
       }
     }
     return '203.0.113.2';
   } else {
-    // LAN: use .1 in same subnet as connected client
+    // LAN: .1 im Subnetz des Clients (bzw. .254 falls Client selbst .1 ist)
     if(peer.ip) {
       const parts = peer.ip.split('.');
-      if(parts.length === 4) return `${parts[0]}.${parts[1]}.${parts[2]}.1`;
+      if(parts.length === 4) {
+        const host = parseInt(parts[3]) === 1 ? '254' : '1';
+        return `${parts[0]}.${parts[1]}.${parts[2]}.${host}`;
+      }
     }
     return '192.168.1.1';
   }
@@ -2509,14 +2562,20 @@ function renderRouterInterfaces(n) {
     return;
   }
 
+  // Verwaiste Interface-Einträge (gelöschte Kabel) entfernen
+  Object.keys(r.interfaces).forEach(k => {
+    if(!edges.some(e => e.id === k)) delete r.interfaces[k];
+  });
+
   document.getElementById('routerIfaceList').innerHTML = connectedNodes.map(({edge, peer}, i) => {
-    const ethId = `eth${i}`;
-    const iface = r.interfaces[ethId] || {};
+    const ifKey   = edge.id;          // stabiler Schlüssel: Kabel-ID
+    const ethName = `eth${i}`;        // Anzeigename
+    const iface = r.interfaces[ifKey] || {};
     const peerType = peer.type;
     const isExternal = peer.type==='Internet'||peer.type==='Cloud'||peer.zone==='external';
 
     // Role labels
-    const roleLabel = isExternal ? 'WAN – Richtung Internet' : `LAN – Richtung ${peer.label}`;
+    const roleLabel = isExternal ? 'WAN – Richtung Internet' : `LAN – Richtung ${esc(peer.label)}`;
     const roleColor = isExternal ? '#ff6b35' : '#39ff14';
 
     // Smart placeholder: suggest an IP based on peer
@@ -2525,13 +2584,13 @@ function renderRouterInterfaces(n) {
 
     // Hint text explaining what IP to enter
     const hint = isExternal
-      ? `Eigene WAN-IP des Routers (NICHT die IP von ${peer.label}). Muss im selben Subnetz wie ${peer.ip||'Internet-IP'} liegen.`
-      : `Gateway-IP für ${peer.label}. Clients tragen diese als Standard-Gateway ein. Empfohlen: ${peer.ip ? peer.ip.replace(/\.\d+$/, '.1') : '192.168.1.1'}`;
+      ? `Eigene WAN-IP des Routers (NICHT die IP von ${esc(peer.label)}). Muss im selben Subnetz wie ${esc(peer.ip)||'Internet-IP'} liegen.`
+      : `Gateway-IP für ${esc(peer.label)}. Clients tragen diese als Standard-Gateway ein. Empfohlen: ${peer.ip ? esc(peer.ip.replace(/\.\d+$/, '.1')) : '192.168.1.1'}`;
 
     // Peer info line
     const peerInfo = peer.ip
-      ? `${ICONS[peerType]||'📦'} ${peer.label}: ${peer.ip}`
-      : `${ICONS[peerType]||'📦'} ${peer.label}: keine IP`;
+      ? `${ICONS[peerType]||'📦'} ${esc(peer.label)}: ${esc(peer.ip)}`
+      : `${ICONS[peerType]||'📦'} ${esc(peer.label)}: keine IP`;
 
     const curMask = iface.mask || '/24 – 255.255.255.0';
     const maskOptsSelected = maskOpts.replace(`>${curMask}<`, ` selected>${curMask}<`);
@@ -2542,16 +2601,16 @@ function renderRouterInterfaces(n) {
     const notConfigMsg = !hasIP ? `<div style="background:rgba(255,51,85,0.08);border:1px solid rgba(255,51,85,0.3);border-radius:4px;padding:5px 8px;font-size:10px;color:#ff3355;font-family:'Share Tech Mono',monospace;margin-top:4px">✕ NICHT KONFIGURIERT – Verbindung funktioniert nicht bis IP vergeben!</div>` : '';
 
     return `
-    <div class="router-iface" data-ethid="${ethId}" style="border-left:3px solid ${hasIP?roleColor:'#ff3355'}">
+    <div class="router-iface" data-ifkey="${ifKey}" style="border-left:3px solid ${hasIP?roleColor:'#ff3355'}">
       <div class="router-iface-title">
-        <span style="color:${roleColor};font-weight:900">${ethId}</span>
+        <span style="color:${roleColor};font-weight:900">${ethName}</span>
         <span style="color:${roleColor};font-size:10px;margin-left:4px">${roleLabel}</span>
         <span style="margin-left:auto;font-size:9px;color:var(--accent2);font-family:'Share Tech Mono',monospace">${peerInfo}</span>
       </div>
       <div class="form-group">
         <label class="form-label">IP-Adresse dieses Router-Ports</label>
         <input type="text" class="form-input riface-ip"
-          placeholder="${placeholder}" value="${iface.ip||''}"
+          placeholder="${esc(placeholder)}" value="${esc(iface.ip||'')}"
           style="border-color:${inputBorder};${!hasIP?'background:rgba(255,51,85,0.04)':''}"
           onkeydown="if(event.key==='Enter')applyConfig()">
         ${notConfigMsg}
@@ -2567,14 +2626,11 @@ function renderRouterInterfaces(n) {
 
 function updateRouterPanel(n) {
   const r = n.routerCfg || {};
-  const connectedNodes = edges
-    .filter(e=>e.from===n.id||e.to===n.id)
-    .map(e=>nodes[e.from===n.id?e.to:e.from])
-    .filter(Boolean);
+  const myEdges = edges.filter(e=>e.from===n.id||e.to===n.id);
 
   const ifaces = Object.values(r.interfaces||{});
   const configuredCount = ifaces.filter(i=>i.ip).length;
-  const totalPorts = connectedNodes.length;
+  const totalPorts = myEdges.length;
   const hasNAT = r.nat !== false;
   const hasDefaultGW = r.defaultGW && r.defaultGW.trim();
 
@@ -2588,13 +2644,11 @@ function updateRouterPanel(n) {
 
   // Routing table
   const rows = [];
-  connectedNodes.forEach((cn, i) => {
-    const ethId = `eth${i}`;
-    const iface = (r.interfaces||{})[ethId]||{};
+  myEdges.forEach((e, i) => {
+    const iface = (r.interfaces||{})[e.id]||{};
     if(iface.ip) {
-      const subnet = iface.ip.replace(/\.\d+$/, '.0');
-      const maskShort = (iface.mask||'/24').split(' ')[0];
-      rows.push({ iface: ethId, net: subnet+maskShort, type:'connected' });
+      const net = networkLabel(iface.ip, iface.mask) || iface.ip;
+      rows.push({ iface: `eth${i}`, net, type:'connected' });
     }
   });
   if(hasDefaultGW) rows.push({ iface:'*', net:'0.0.0.0/0 via '+r.defaultGW, type:'default' });
@@ -2602,7 +2656,7 @@ function updateRouterPanel(n) {
   document.getElementById('routeTableBody').innerHTML = rows.length
     ? rows.map(row=>`<div class="route-row">
         <span style="color:var(--accent2)">${row.iface}</span>
-        <span>${row.net}</span>
+        <span>${esc(row.net)}</span>
         <span class="route-type ${row.type}">${row.type==='default'?'DEF':'CON'}</span>
       </div>`).join('')
     : '<div class="route-row" style="color:var(--text2);grid-column:1/-1">Noch keine Routen</div>';
@@ -2616,37 +2670,44 @@ function applyConfig() {
   const n = nodes[selectedNode];
   n.label = document.getElementById('cfgName').value.trim() || n.label;
 
-  if(n.type === 'Router') {
+  if(ROUTER_TYPES.includes(n.type)) {
+    // Router UND L3-Switch nutzen das Interface-Panel
     if(!n.routerCfg) n.routerCfg = { interfaces:{}, nat:true, defaultGW:'' };
     const r = n.routerCfg;
     r.nat       = document.getElementById('cfgNAT').checked;
     r.defaultGW = document.getElementById('cfgDefaultGW').value.trim();
     // Save all dynamic interface inputs + check for IP conflicts
     const ifaceRows = document.querySelectorAll('#routerIfaceList .router-iface');
-    ifaceRows.forEach(row => {
-      const ethId  = row.dataset.ethid;
+    ifaceRows.forEach((row, idx) => {
+      const ifKey  = row.dataset.ifkey;
       const ipEl   = row.querySelector('.riface-ip');
       const maskEl = row.querySelector('.riface-mask');
-      if(ethId && ipEl && maskEl) {
-        if(!r.interfaces[ethId]) r.interfaces[ethId] = {};
+      if(ifKey && ipEl && maskEl) {
+        if(!r.interfaces[ifKey]) r.interfaces[ifKey] = {};
         const newIP = ipEl.value.trim();
-        r.interfaces[ethId].ip   = newIP;
-        r.interfaces[ethId].mask = maskEl.value;
+        r.interfaces[ifKey].ip   = newIP;
+        r.interfaces[ifKey].mask = maskEl.value;
         if(newIP) {
-          const conflict = findIPConflictForRouter(n.id, newIP, ethId);
-          if(conflict) log(`⚠ IP-Konflikt: ${newIP} (${ethId}) kollidiert mit "${conflict}"!`, 'err');
+          const conflict = findIPConflictForRouter(n.id, newIP, ifKey);
+          if(conflict) log(`⚠ IP-Konflikt: ${newIP} (eth${idx}) kollidiert mit "${conflict}"!`, 'err');
         }
       }
+    });
+    // Verwaiste Einträge (gelöschte Kabel) entfernen
+    Object.keys(r.interfaces).forEach(k => {
+      if(!edges.some(e => e.id === k)) delete r.interfaces[k];
     });
     // Set display IP = first configured interface
     const firstIface = Object.values(r.interfaces).find(i=>i.ip);
     n.ip   = firstIface ? firstIface.ip : '';
     n.zone = 'internal';
     updateRouterPanel(n);
-    const summary = Object.entries(r.interfaces)
-      .filter(([,v])=>v.ip)
-      .map(([k,v])=>`${k}:${v.ip}`).join(' | ');
-    log(`Router gespeichert: ${n.label} | ${summary||'keine IPs'} | NAT:${r.nat?'an':'aus'}`, 'ok');
+    const myEdges = edges.filter(e=>e.from===n.id||e.to===n.id);
+    const summary = myEdges
+      .map((e,i)=>({name:`eth${i}`, ip:(r.interfaces[e.id]||{}).ip}))
+      .filter(x=>x.ip)
+      .map(x=>`${x.name}:${x.ip}`).join(' | ');
+    log(`${n.type==='Router'?'Router':'L3-Switch'} gespeichert: ${n.label} | ${summary||'keine IPs'} | NAT:${r.nat?'an':'aus'}`, 'ok');
   } else {
     n.ip   = document.getElementById('cfgIP').value.trim();
     n.mask = document.getElementById('cfgMask').value;
@@ -2664,12 +2725,10 @@ function applyConfig() {
         // Trotzdem speichern, damit Nutzer es sieht – Validierung zeigt Fehler
       }
     }
-    // ── Gateway-Plausibilitätsprüfung ──
-    if(n.gw && n.ip) {
-      const gwSubnet = getSubnet(n.gw);
-      const ipSubnet = getSubnet(n.ip);
-      if(gwSubnet && ipSubnet && gwSubnet !== ipSubnet) {
-        log(`⚠ Gateway ${n.gw} liegt in anderem Subnetz als IP ${n.ip} – bitte prüfen`, 'warn');
+    // ── Gateway-Plausibilitätsprüfung (maskenbewusst) ──
+    if(n.gw && n.ip && ipToInt(n.gw) !== null && ipToInt(n.ip) !== null) {
+      if(!ipInNetwork(n.gw, n.ip, maskBits(n.mask))) {
+        log(`⚠ Gateway ${n.gw} liegt außerhalb des eigenen Subnetzes ${networkLabel(n.ip, n.mask)} – bitte prüfen`, 'warn');
       }
     }
     log(`Konfiguration gespeichert: ${n.label} IP=${n.ip||'-'} Zone=${n.zone}`, 'ok');
@@ -2689,9 +2748,10 @@ function refreshNodeDisplay(n) {
   if(labelEl) labelEl.textContent = n.label;
   if(ipEl) {
     if(ROUTER_TYPES && ROUTER_TYPES.includes(n.type) && n.routerCfg) {
-      const ifaces = Object.entries(n.routerCfg.interfaces||{})
-        .filter(([,v])=>v.ip)
-        .map(([k,v])=>`${k}:${v.ip}`);
+      const ifaces = edges.filter(e=>e.from===n.id||e.to===n.id)
+        .map((e,i)=>({name:`eth${i}`, ip:(n.routerCfg.interfaces[e.id]||{}).ip}))
+        .filter(x=>x.ip)
+        .map(x=>`${x.name}:${x.ip}`);
       if(ifaces.length === 0) {
         ipEl.textContent = '⚠ Ports konfigurieren!';
         ipEl.style.color = '#ff3355';
@@ -2735,7 +2795,8 @@ function handleConnect(id) {
 /* ═══════════════════════════════════════════════
    EDGES (SVG)
 ═══════════════════════════════════════════════ */
-const CLIENT_TYPES  = ['PC','Laptop','Phone','Smartphone'];
+const CLIENT_TYPES  = ['PC','Laptop','Phone'];
+const ZONE_TYPES    = ['ZoneInternal','ZoneDMZ','ZoneExternal'];
 const ROUTER_TYPES  = ['Router','L3Switch'];  // devices that do Layer 3 routing
 
 function getConnectionCount(nodeId) {
@@ -2744,8 +2805,9 @@ function getConnectionCount(nodeId) {
 
 
 /* ═══════════════════════════════════════════════
-   LINK NETWORKS (point-to-point /30 subnets)
-   Each cable = its own /30 subnet automatically
+   LINK NETWORKS
+   Jedes Kabel erhält automatisch ein Netz-Label aus
+   IP + Maske der Endpunkte (Fallback: /30-Transfernetz)
 ═══════════════════════════════════════════════ */
 function assignLinkNet(edgeId, fromId, toId) {
   const fromNode = nodes[fromId], toNode = nodes[toId];
@@ -2755,13 +2817,14 @@ function assignLinkNet(edgeId, fromId, toId) {
   const ipFrom = getNodeEndpointIP(fromNode, edgeId);
   const ipTo   = getNodeEndpointIP(toNode, edgeId);
 
-  // Determine subnet from the first available real IP
+  // Netz-Label aus der ersten vorhandenen IP + zugehöriger Maske ableiten
   let subnet = '';
-  const s1 = getSubnet(ipFrom), s2 = getSubnet(ipTo);
-  if(s1) subnet = s1 + '.0/24';
-  else if(s2) subnet = s2 + '.0/24';
+  const l1 = networkLabel(ipFrom, getNodeEndpointMask(fromNode, edgeId));
+  const l2 = networkLabel(ipTo,   getNodeEndpointMask(toNode,   edgeId));
+  if(l1) subnet = l1;
+  else if(l2) subnet = l2;
   else {
-    // Neither side has an IP yet → use placeholder /30
+    // Noch keine IP auf beiden Seiten → Platzhalter-/30-Transfernetz
     const used = Object.keys(linkNets).length;
     const t = Math.floor(used/64), f = (used%64)*4;
     subnet = `10.0.${t}.${f}/30`;
@@ -2785,19 +2848,23 @@ function assignLinkNet(edgeId, fromId, toId) {
 }
 
 function getNodeEndpointIP(node, edgeId) {
-  // Router/L3Switch: find which interface connects to this edge
+  // Router/L3Switch: Interface hängt direkt am Kabel (Edge-ID = Schlüssel)
   if(ROUTER_TYPES.includes(node.type) && node.routerCfg) {
-    // Find which peer this edge connects to, match interface index
-    const myEdges = edges.filter(e => e.from === node.id || e.to === node.id);
-    const edgeIdx = myEdges.findIndex(e => e.id === edgeId);
-    const ethId   = `eth${edgeIdx}`;
-    const iface   = (node.routerCfg.interfaces || {})[ethId];
+    const iface = (node.routerCfg.interfaces || {})[edgeId];
     return iface ? iface.ip : '';
   }
-  // Switch/Firewall/AP: no IP
-  if(['Switch','Firewall','AccessPoint','L3Switch'].includes(node.type)) return '';
-  // Endpoint device: use its IP
+  // Switch/Firewall/AP: keine eigene IP am Kabel
+  if(['Switch','Firewall','AccessPoint'].includes(node.type)) return '';
+  // Endgerät: eigene IP
   return node.ip || '';
+}
+
+function getNodeEndpointMask(node, edgeId) {
+  if(ROUTER_TYPES.includes(node.type) && node.routerCfg) {
+    const iface = (node.routerCfg.interfaces || {})[edgeId];
+    return iface ? (iface.mask || '/24 – 255.255.255.0') : '/24 – 255.255.255.0';
+  }
+  return node.mask || '/24 – 255.255.255.0';
 }
 
 // Call this to refresh link labels after IP changes
@@ -2811,9 +2878,10 @@ function refreshLinkNets() {
     if(!ln.userEditedIpFrom) ln.ipFrom = getNodeEndpointIP(from, e.id);
     if(!ln.userEditedIpTo)   ln.ipTo   = getNodeEndpointIP(to,   e.id);
     if(!ln.userEditedSubnet) {
-      const s1 = getSubnet(ln.ipFrom), s2 = getSubnet(ln.ipTo);
-      if(s1) ln.subnet = s1 + '.0/24';
-      else if(s2) ln.subnet = s2 + '.0/24';
+      const l1 = networkLabel(ln.ipFrom, getNodeEndpointMask(from, e.id));
+      const l2 = networkLabel(ln.ipTo,   getNodeEndpointMask(to,   e.id));
+      if(l1) ln.subnet = l1;
+      else if(l2) ln.subnet = l2;
     }
   });
 }
@@ -2986,6 +3054,9 @@ function redrawEdges() {
       if(mode==='delete'){
         e.stopPropagation();
         delete linkNets[edge.id];
+        [from, to].forEach(n=>{
+          if(n && n.routerCfg && n.routerCfg.interfaces) delete n.routerCfg.interfaces[edge.id];
+        });
         edges = edges.filter(ev=>ev.id!==edge.id);
         redrawEdges();
         log(`Verbindung gelöscht: ${from.label} ⟷ ${to.label}`,'warn');
@@ -3118,6 +3189,12 @@ function deleteNode(id) {
   nodes[id].el.remove();
   delete BADGE_REASONS[id];
   delete nodes[id];
+  // Kabel des Geräts entfernen + zugehörige Link-Netze und Router-Ports aufräumen
+  edges.filter(e=>e.from===id||e.to===id).forEach(e=>{
+    delete linkNets[e.id];
+    const other = nodes[e.from===id ? e.to : e.from];
+    if(other && other.routerCfg && other.routerCfg.interfaces) delete other.routerCfg.interfaces[e.id];
+  });
   edges = edges.filter(e=>e.from!==id&&e.to!==id);
   redrawEdges();
   if(selectedNode===id) {
@@ -3164,7 +3241,7 @@ function runPing() {
 
     // ── 3: Hop-by-Hop Simulation ──
     // Walk the path. If we hit a Router, check if it has a route to the destination.
-    const ttl = 64;
+    const ttl = 128; // Windows-Standard-TTL (Linux/macOS: 64). Bestimmt den in der Ping-Antwort angezeigten Wert (TTL − Router-Hops)
     let hopResult = simulatePingHops(fId, tId, path, ttl);
 
     if(hopResult.blocked) {
@@ -3182,10 +3259,11 @@ function runPing() {
     }
 
     // ── Erfolg ──
-    const ms = Array.from({length:4}, ()=>Math.floor(Math.random()*hopResult.hops*2+1));
+    // FACT: TTL wird nur von Routern (Layer 3) dekrementiert, nicht von Switches
+    const ms = Array.from({length:4}, ()=>Math.floor(Math.random()*(hopResult.hops*2+3)+1));
     ms.forEach(t=>log(`Antwort von ${to.ip}: Zeit=${t}ms TTL=${ttl - hopResult.hops}`,'ok'));
     const avg=Math.round(ms.reduce((a,b)=>a+b)/4);
-    log(`Ping-Statistik: 4 gesendet, 4 empfangen, 0 Verlust – Ø ${avg}ms (${hopResult.hops} Hops)`,'ok');
+    log(`Ping-Statistik: 4 gesendet, 4 empfangen, 0 Verlust – Ø ${avg}ms (${hopResult.hops} Router-Hop(s))`,'ok');
     animatePath(path);
   }, 600);
 }
@@ -3209,12 +3287,18 @@ function runTrace() {
   // ── 2: Hop-by-Hop-Prüfung (gleiche Logik wie Ping) ──
   const hopResult = simulatePingHops(fId, tId, path, 64);
 
+  // FACT: Traceroute zeigt nur Layer-3-Hops (Router) und das Ziel –
+  // Switches dekrementieren den TTL nicht und erscheinen deshalb nicht.
+  const l3Path = path.slice(1).filter((id,idx,arr) =>
+    (nodes[id] && ROUTER_TYPES.includes(nodes[id].type)) || idx === arr.length-1);
+
   if(hopResult.blocked) {
-    // Show hops up to the block, then * * * (real traceroute behavior)
-    const goodHops = path.slice(0, hopResult.hopNum + 1);
+    // Router bis zum Block anzeigen, dann * * * (echtes Traceroute-Verhalten)
+    const goodHops = path.slice(1, hopResult.hopNum + 1)
+      .filter(id => nodes[id] && ROUTER_TYPES.includes(nodes[id].type));
     goodHops.forEach((id,i)=>{
       const n=nodes[id];
-      setTimeout(()=>{ log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||getRouterDisplayIp(n)||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`, i < goodHops.length-1 ? 'ok' : 'warn'); }, i*250);
+      setTimeout(()=>{ log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||getRouterDisplayIp(n)||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`, 'ok'); }, i*250);
     });
     setTimeout(()=>{
       log(`  ${String(goodHops.length+1).padStart(2,' ')}  *  *  *  Zeitüberschreitung der Anforderung.`,'err');
@@ -3224,13 +3308,13 @@ function runTrace() {
   }
 
   // ── 3: Erfolgreicher Trace ──
-  path.forEach((id,i)=>{
+  l3Path.forEach((id,i)=>{
     const n=nodes[id];
     setTimeout(()=>{
       log(`  ${String(i+1).padStart(2,' ')}  ${(n.ip||getRouterDisplayIp(n)||'*').padEnd(18,' ')}  ${Math.floor(Math.random()*10+1)}ms  ${n.label}`,'ok');
     }, i*300);
   });
-  setTimeout(()=>{ log('Traceroute abgeschlossen.','info'); animatePath(path); }, path.length*300+100);
+  setTimeout(()=>{ log('Traceroute abgeschlossen.','info'); animatePath(path); }, l3Path.length*300+100);
 }
 
 function getRouterDisplayIp(n) {
@@ -3248,10 +3332,11 @@ function runScan() {
 
   const reachable = Object.values(nodes).filter(t=>{
     if(t.id===fId) return false;
+    if(ZONE_TYPES.includes(t.type)) return false; // Zonen-Marker sind keine Hosts
     const p=findPath(fId,t.id);
-    if(p.length===0) return false;          // keine physische Verbindung
-    if(isBlocked(n,t,p)) return false;      // Firewall/Zone/Routing
-    return true;
+    if(p.length===0) return false;                // keine physische Verbindung
+    if(!n.ip || !t.ip) return false;              // ohne IP kein ICMP
+    return !simulatePingHops(fId, t.id, p, 64).blocked; // gleiche Logik wie Ping
   });
 
   setTimeout(()=>{
@@ -3373,20 +3458,24 @@ function buildLabelElement(id, x, y, text) {
   };
   document.addEventListener('mousemove', onLblMove);
   document.addEventListener('mouseup',   onLblUp);
+  const cleanup = () => {
+    document.removeEventListener('mousemove', onLblMove);
+    document.removeEventListener('mouseup',   onLblUp);
+  };
 
   // ── Delete mode support ──
   el.addEventListener('click', e => {
     if(mode === 'delete') { e.stopPropagation(); deleteLabel(id); }
   });
 
-  return { el, textEl };
+  return { el, textEl, cleanup };
 }
 
 function addLabel(x, y, text) {
   const id = 'lbl' + (++labelCounter);
-  const { el, textEl } = buildLabelElement(id, x, y, text);
+  const { el, textEl, cleanup } = buildLabelElement(id, x, y, text);
   document.getElementById('nodesContainer').appendChild(el);
-  const lbl = { id, x, y, text: text || '', el };
+  const lbl = { id, x, y, text: text || '', el, cleanup };
   labelNodes.push(lbl);
   setTimeout(() => { textEl.focus(); selectAll(textEl); }, 60);
   return lbl;
@@ -3403,6 +3492,7 @@ function selectAll(el) {
 function deleteLabel(id) {
   const idx = labelNodes.findIndex(l => l.id === id);
   if(idx !== -1) {
+    if(labelNodes[idx].cleanup) labelNodes[idx].cleanup();
     labelNodes[idx].el.remove();
     labelNodes.splice(idx, 1);
   }
@@ -3416,12 +3506,12 @@ function addLabelAtCenter() {
 }
 function renderLabels(labelDataArr) {
   labelDataArr.forEach(l => {
-    const { el } = buildLabelElement(l.id, l.x, l.y, l.text);
+    const { el, cleanup } = buildLabelElement(l.id, l.x, l.y, l.text);
     // Update labelCounter to avoid ID collision
     const num = parseInt(l.id.replace('lbl',''));
     if(!isNaN(num) && num >= labelCounter) labelCounter = num + 1;
     document.getElementById('nodesContainer').appendChild(el);
-    labelNodes.push({...l, el});
+    labelNodes.push({...l, el, cleanup});
   });
 }
 
@@ -3453,7 +3543,7 @@ function findIPConflict(excludeNodeId, ip) {
   // Returns label of conflicting device, or null if no conflict
   for(const n of Object.values(nodes)) {
     if(n.id === excludeNodeId) continue;
-    if(n.type === 'Router') {
+    if(ROUTER_TYPES.includes(n.type)) {
       if(n.routerCfg && n.routerCfg.interfaces) {
         for(const iface of Object.values(n.routerCfg.interfaces)) {
           if(iface.ip === ip) return `${n.label} (Router-Interface)`;
@@ -3466,15 +3556,15 @@ function findIPConflict(excludeNodeId, ip) {
   return null;
 }
 
-// Same check for router interface save
-function findIPConflictForRouter(routerNodeId, ip, excludeEthId) {
+// Same check for router interface save (excludeIfKey = Edge-ID des Ports)
+function findIPConflictForRouter(routerNodeId, ip, excludeIfKey) {
   // Check against all other nodes AND other interfaces of same router
   for(const n of Object.values(nodes)) {
-    if(n.type === 'Router') {
+    if(ROUTER_TYPES.includes(n.type)) {
       if(n.routerCfg && n.routerCfg.interfaces) {
-        for(const [ethId, iface] of Object.entries(n.routerCfg.interfaces)) {
-          if(n.id === routerNodeId && ethId === excludeEthId) continue;
-          if(iface.ip === ip) return `${n.label} ${ethId}`;
+        for(const [ifKey, iface] of Object.entries(n.routerCfg.interfaces)) {
+          if(n.id === routerNodeId && ifKey === excludeIfKey) continue;
+          if(iface.ip === ip) return `${n.label} (Interface)`;
         }
       }
     } else if(n.ip === ip) {
@@ -3488,23 +3578,6 @@ function findIPConflictForRouter(routerNodeId, ip, excludeEthId) {
    NETWORK UTILITY FUNCTIONS
 ═══════════════════════════════════════════════ */
 
-/* Returns the /24 network prefix (first 3 octets) */
-function getSubnet(ip) {
-  if(!ip || typeof ip !== 'string') return null;
-  const parts = ip.split('.');
-  if(parts.length < 3) return null;
-  if(parts.some(p => isNaN(parseInt(p)))) return null;
-  return parts[0] + '.' + parts[1] + '.' + parts[2];
-}
-
-function needsRouter(from, to) {
-  if(!from.ip || !to.ip) return false;
-  const sFrom = getSubnet(from.ip);
-  const sTo   = getSubnet(to.ip);
-  if(!sFrom || !sTo) return false;
-  return sFrom !== sTo;
-}
-
 function hasRouterInPath(path) {
   return path.some(id => nodes[id] && ROUTER_TYPES.includes(nodes[id].type));
 }
@@ -3516,11 +3589,13 @@ function isBlocked(from, to, path) {
   const hasRouter = hasRouterInPath(path);
   const hasFW     = path.some(id => nodes[id] && nodes[id].type === 'Firewall');
 
-  // ── Both have IPs: check subnet reachability ──
+  // ── Both have IPs: check subnet reachability (maskenbewusst) ──
   if(from.ip && to.ip) {
-    const sameSubnet = (getSubnet(from.ip) === getSubnet(to.ip));
-    if(!sameSubnet && !hasRouter) {
-      return `Verschiedene Subnetze (${getSubnet(from.ip)} ≠ ${getSubnet(to.ip)}) – Router fehlt im Pfad`;
+    const inSame = sameSubnet(from.ip, from.mask, to.ip, to.mask);
+    if(!inSame && !hasRouter) {
+      const nFrom = networkLabel(from.ip, from.mask) || from.ip;
+      const nTo   = networkLabel(to.ip,   to.mask)   || to.ip;
+      return `Verschiedene Subnetze (${nFrom} ≠ ${nTo}) – Router fehlt im Pfad`;
     }
   }
 
@@ -3530,17 +3605,20 @@ function isBlocked(from, to, path) {
       return 'Extern→Intern: eingehende Verbindungen sind geblockt';
     if(from.zone === 'dmz' && to.zone === 'internal')
       return 'DMZ→Intern: DMZ-Geräte dürfen nicht ins interne Netz';
-    if(from.zone === 'internal' && to.zone === 'external' && !hasRouter)
-      return 'Intern→Extern: Router mit NAT fehlt';
+    if(from.zone === 'internal' && to.zone === 'external') {
+      const routersInPath = path
+        .filter(id => nodes[id] && ROUTER_TYPES.includes(nodes[id].type))
+        .map(id => nodes[id]);
+      if(routersInPath.length === 0)
+        return 'Intern→Extern: Router mit NAT fehlt';
+      if(routersInPath.every(r => r.routerCfg && r.routerCfg.nat === false))
+        return 'Intern→Extern: NAT ist auf dem Router deaktiviert – private IPs werden nicht ins Internet übersetzt';
+    }
     if((from.zone === 'dmz' || to.zone === 'dmz') && !hasRouter && !hasFW)
       return 'DMZ↔Extern: Router oder Firewall fehlt';
   }
 
   return null; // not blocked
-}
-
-function crossFW(from, to, path) {
-  return isBlocked(from, to, path) !== null;
 }
 
 /* ── Hop-by-hop ping simulation ── */
@@ -3567,6 +3645,23 @@ function simulatePingHops(fromId, toId, path, ttl) {
     };
   }
 
+  // ── Gateway-Prüfung: Ziel in fremdem Subnetz erfordert Standard-Gateway ──
+  // (Router/L3Switch nutzen ihre Interfaces, Internet/Cloud gelten als Backbone)
+  const NO_GW_TYPES = [...ROUTER_TYPES, 'Internet', 'Cloud', 'Switch', 'Firewall'];
+  if(!NO_GW_TYPES.includes(fromNode.type) &&
+     !sameSubnet(fromNode.ip, fromNode.mask, toNode.ip, toNode.mask)) {
+    if(!fromNode.gw || !fromNode.gw.trim()) {
+      return {blocked:true, hopNum:0, blockedAt:fromNode.label, fromIp:fromNode.ip,
+              reason:`${fromNode.label}: Ziel liegt in anderem Subnetz, aber kein Standard-Gateway konfiguriert`,
+              icmpType:'unreachable', hops:0};
+    }
+    if(ipToInt(fromNode.gw) !== null && !ipInNetwork(fromNode.gw, fromNode.ip, maskBits(fromNode.mask))) {
+      return {blocked:true, hopNum:0, blockedAt:fromNode.label, fromIp:fromNode.ip,
+              reason:`Standard-Gateway ${fromNode.gw} liegt außerhalb des eigenen Subnetzes ${networkLabel(fromNode.ip, fromNode.mask)}`,
+              icmpType:'unreachable', hops:0};
+    }
+  }
+
   // Hop-by-hop walk
   for(let i = 0; i < path.length - 1; i++) {
     const current = nodes[path[i]];
@@ -3590,7 +3685,10 @@ function simulatePingHops(fromId, toId, path, ttl) {
     }
   }
 
-  return {blocked:false, hops: path.length - 1};
+  // FACT: nur Layer-3-Geräte (Router) dekrementieren den TTL – Switches nicht
+  const l3Hops = path.slice(1, -1)
+    .filter(id => nodes[id] && ROUTER_TYPES.includes(nodes[id].type)).length;
+  return {blocked:false, hops: l3Hops, stations: path.length - 1};
 }
 
 function routerCanForward(routerNode, fromNode, toNode) {
@@ -3606,17 +3704,16 @@ function routerCanForward(routerNode, fromNode, toNode) {
     return `"${routerNode.label}" hat keine Interface-IPs – bitte Ports konfigurieren`;
   }
 
-  const toSubnet = getSubnet(toNode.ip);
-  const routerSubnets = ifaces.map(i => getSubnet(i.ip));
-
-  // Destination directly connected via one interface?
-  if(routerSubnets.includes(toSubnet)) return null;
+  // Ziel direkt über ein Interface erreichbar (Netz des Interfaces enthält Ziel-IP)?
+  const directly = ifaces.some(i => ipInNetwork(toNode.ip, i.ip, maskBits(i.mask)));
+  if(directly) return null;
 
   // Has default gateway? Can forward to any unknown subnet
   if(r.defaultGW && r.defaultGW.trim()) return null;
 
   // No route to destination
-  return `"${routerNode.label}" hat keine Route zu ${toSubnet}.x – Default-Gateway konfigurieren`;
+  const toNet = networkLabel(toNode.ip, toNode.mask) || toNode.ip;
+  return `"${routerNode.label}" hat keine Route zu ${toNet} – Default-Gateway konfigurieren`;
 }
 
 
@@ -3640,7 +3737,8 @@ function log(msg, type='') {
   const div=document.createElement('div');
   div.className='term-line '+(type||'');
   const ts=new Date().toLocaleTimeString('de',{hour12:false});
-  div.innerHTML=`<span class="term-prompt">[${ts}]</span> ${msg}`;
+  div.innerHTML=`<span class="term-prompt">[${ts}]</span> `;
+  div.appendChild(document.createTextNode(msg));
   body.appendChild(div);
   body.scrollTop=body.scrollHeight;
   // Badge
@@ -3677,6 +3775,7 @@ function updateSelects() {
     const cur=el.value;
     el.innerHTML='';
     Object.values(nodes).forEach(n=>{
+      if(ZONE_TYPES.includes(n.type)) return; // Zonen-Marker sind keine Hosts
       const opt=document.createElement('option');
       opt.value=n.id; opt.textContent=`${n.label} (${n.ip||'keine IP'})`;
       el.appendChild(opt);
@@ -3689,15 +3788,16 @@ function updateSelects() {
    CLEAR / DEMO
 ═══════════════════════════════════════════════ */
 function clearCanvas() {
-  if(!confirm('Alle Geräte und Verbindungen löschen?')) return;
+  if(Object.keys(nodes).length > 0 || labelNodes.length > 0) {
+    if(!confirm('Alle Geräte und Verbindungen löschen?')) return false;
+  }
   Object.keys(nodes).forEach(id=>{ delete BADGE_REASONS[id]; nodes[id].el.remove(); });
-  // Remove label elements
-labelNodes.forEach(l=>{ if(l.el) l.el.remove(); });
-nodes={}; edges=[]; linkNets={}; labelNodes=[]; nodeCounter=0; edgeCounter=0; labelCounter=0; selectedNode=null; rewardShown=false; connectFirst=null; dragState=null;
+  // Remove label elements (inkl. Event-Listener-Cleanup)
+  labelNodes.forEach(l=>{ if(l.cleanup) l.cleanup(); if(l.el) l.el.remove(); });
+  nodes={}; edges=[]; linkNets={}; labelNodes=[]; nodeCounter=0; edgeCounter=0; labelCounter=0; selectedNode=null; rewardShown=false; connectFirst=null; dragState=null;
   document.getElementById('mainCanvas').innerHTML='';
   document.getElementById('noSelectionMsg').style.display='block';
   document.getElementById('deviceConfig').style.display='none';
-  document.getElementById('deviceActions').style.display='none';
   document.getElementById('deviceActions').style.display='none';
   document.getElementById('canvasHint').style.display='block';
   // Reset status bar
@@ -3712,44 +3812,59 @@ nodes={}; edges=[]; linkNets={}; labelNodes=[]; nodeCounter=0; edgeCounter=0; la
   if(vc) vc.innerHTML='<div style="color:var(--text2);font-size:12px;text-align:center;margin-top:20px">Noch keine Geräte vorhanden.<br>Füge Geräte hinzu um die Validierung zu starten.</div>';
   updateSelects();
   log('Canvas geleert.','warn');
+  return true;
 }
 
 function loadDemo() {
-  clearCanvas();
+  if(clearCanvas() === false) return; // Abbruch im Bestätigungsdialog respektieren
   setTimeout(()=>{
-    // Internet zone
+    // Internet + Router (3 Ports: WAN, DMZ, LAN)
     const inet  = addNode('Internet',  620, 40, {label:'Internet', ip:'203.0.113.1', zone:'external'});
-    const fw    = addNode('Firewall',  600,160, {label:'FW-01', ip:'192.168.0.1', zone:'dmz'});
-    const dmzSW = addNode('Switch',    460,280, {label:'DMZ-SW', ip:'', zone:'dmz'});
-    const web   = addNode('Server',    380,390, {label:'Web-Server', ip:'192.168.2.10', zone:'dmz'});
-    const mail  = addNode('Server',    540,390, {label:'Mail-Server', ip:'192.168.2.11', zone:'dmz'});
-    const coreSW= addNode('Switch',    760,280, {label:'Core-SW', ip:'', zone:'internal'});
-    const router= addNode('Router',    900,160, {label:'Router-01', ip:'10.0.0.1', zone:'internal'});
-    const intSW = addNode('Switch',    760,390, {label:'INT-SW', ip:'', zone:'internal'});
-    const pc1   = addNode('PC',        660,500, {label:'PC-Büro-1', ip:'10.0.1.10', zone:'internal'});
-    const pc2   = addNode('PC',        760,500, {label:'PC-Büro-2', ip:'10.0.1.11', zone:'internal'});
-    const lap   = addNode('Laptop',    860,500, {label:'Laptop-01', ip:'10.0.1.20', zone:'internal'});
-    const ap    = addNode('AccessPoint',960,500,{label:'WLAN-AP', ip:'10.0.1.254', zone:'internal'});
-    const srv   = addNode('Server',    920,390, {label:'File-Server', ip:'10.0.2.10', zone:'internal'});
-    const dns   = addNode('DNS',       1050,280,{label:'DNS-Server', ip:'8.8.8.8', zone:'external'});
+    const dns   = addNode('DNS',       820, 60, {label:'DNS-Server', ip:'8.8.8.8', zone:'external'});
+    const router= addNode('Router',    620,160, {label:'Router-01', zone:'internal'});
+    const fw    = addNode('Firewall',  760,250, {label:'FW-01', ip:'', zone:'internal'});
+    const dmzSW = addNode('Switch',    440,280, {label:'DMZ-SW', ip:'', zone:'dmz'});
+    const web   = addNode('Server',    360,400, {label:'Web-Server', ip:'192.168.2.10', gw:'192.168.2.1', zone:'dmz'});
+    const mail  = addNode('Server',    520,400, {label:'Mail-Server', ip:'192.168.2.11', gw:'192.168.2.1', zone:'dmz'});
+    const coreSW= addNode('Switch',    820,360, {label:'Core-SW', ip:'', zone:'internal'});
+    const intSW = addNode('Switch',    720,470, {label:'INT-SW', ip:'', zone:'internal'});
+    const pc1   = addNode('PC',        620,570, {label:'PC-Büro-1', ip:'10.0.1.10', gw:'10.0.1.1', zone:'internal'});
+    const pc2   = addNode('PC',        740,570, {label:'PC-Büro-2', ip:'10.0.1.11', gw:'10.0.1.1', zone:'internal'});
+    const lap   = addNode('Laptop',    860,570, {label:'Laptop-01', ip:'10.0.1.20', gw:'10.0.1.1', zone:'internal'});
+    const ap    = addNode('AccessPoint',980,570,{label:'WLAN-AP', ip:'10.0.1.254', gw:'10.0.1.1', zone:'internal'});
+    const srv   = addNode('Server',    960,470, {label:'File-Server', ip:'10.0.1.30', gw:'10.0.1.1', zone:'internal'});
 
-    // Edges
+    // Edges: Router ist das Layer-3-Zentrum (WAN, DMZ, LAN über Firewall)
     const pairs=[
-      [inet.id,fw.id],[fw.id,dmzSW.id],[dmzSW.id,web.id],[dmzSW.id,mail.id],
-      [fw.id,coreSW.id],[coreSW.id,router.id],[coreSW.id,intSW.id],
+      [inet.id,router.id],[inet.id,dns.id],
+      [router.id,dmzSW.id],[dmzSW.id,web.id],[dmzSW.id,mail.id],
+      [router.id,fw.id],[fw.id,coreSW.id],[coreSW.id,intSW.id],
       [intSW.id,pc1.id],[intSW.id,pc2.id],[intSW.id,lap.id],[intSW.id,ap.id],
-      [coreSW.id,srv.id],[router.id,dns.id]
+      [coreSW.id,srv.id]
     ];
     pairs.forEach(([a,b])=>addEdge(a,b));
-    log('Demo-Topologie geladen: Intern/DMZ/Extern Netzwerk','ok');
+
+    // Router-Ports konfigurieren (Interfaces hängen an den Kabel-IDs)
+    const edgeBetween = (a,b)=>edges.find(e=>(e.from===a&&e.to===b)||(e.from===b&&e.to===a));
+    const wanEdge = edgeBetween(router.id, inet.id);
+    const dmzEdge = edgeBetween(router.id, dmzSW.id);
+    const lanEdge = edgeBetween(router.id, fw.id);
+    router.routerCfg.interfaces[wanEdge.id] = { ip:'203.0.113.2', mask:'/24 – 255.255.255.0' }; // WAN
+    router.routerCfg.interfaces[dmzEdge.id] = { ip:'192.168.2.1', mask:'/24 – 255.255.255.0' }; // DMZ-Gateway
+    router.routerCfg.interfaces[lanEdge.id] = { ip:'10.0.1.1',    mask:'/24 – 255.255.255.0' }; // LAN-Gateway
+    router.routerCfg.defaultGW = '203.0.113.254';
+    router.ip = '203.0.113.2';
+    refreshNodeDisplay(router);
+    refreshLinkNets();
+    redrawEdges();
+    log('Demo-Topologie geladen: Intern/DMZ/Extern mit konfiguriertem Router','ok');
+    scheduleValidation();
   },100);
 }
 
 /* ═══════════════════════════════════════════════
    TAB INIT
 ═══════════════════════════════════════════════ */
-// Make sure tab IDs match function
-function tabId(n) { return n.charAt(0).toUpperCase()+n.slice(1); }
 switchTab('config');
 
 // Resize: keep SVG matching canvas size
@@ -3800,7 +3915,7 @@ function runValidation() {
   // Sammle alle IPs: bei Routern die Interface-IPs, bei anderen n.ip
   const allIPs = [];
   allNodes.forEach(n => {
-    if(n.type === 'Router') {
+    if(ROUTER_TYPES.includes(n.type)) {
       // Router hat pro Interface eine eigene IP – alle sammeln
       if(n.routerCfg && n.routerCfg.interfaces) {
         Object.values(n.routerCfg.interfaces).forEach(iface => {
@@ -3826,9 +3941,9 @@ function runValidation() {
     checks.push({status:'ok', icon:'✅', title:'Keine IP-Konflikte', detail:'Alle IPs eindeutig'});
   }
 
-  // ── 5) Isolierte Geräte (keine Verbindungen)? ──
+  // ── 5) Isolierte Geräte (keine Verbindungen)? – Zonen-Marker zählen nicht ──
   const connectedIds = new Set(edges.flatMap(e=>[e.from,e.to]));
-  const isolated = allNodes.filter(n=>!connectedIds.has(n.id));
+  const isolated = allNodes.filter(n=>!ZONE_TYPES.includes(n.type) && !connectedIds.has(n.id));
   if(isolated.length>0) {
     checks.push({status:'warn', icon:'🔌', title:`${isolated.length} isolierte(s) Gerät(e)`, detail: isolated.map(n=>n.label).join(', ')});
   } else if(allNodes.length>1) {
@@ -3842,27 +3957,34 @@ function runValidation() {
   pcs.forEach(pc=>{
     if(!inetNode) return;
     const path = findPath(pc.id, inetNode.id);
-    if(path.length>0 && !isBlocked(pc, inetNode, path)) internetOk++;
+    // Gleiche Logik wie Ping (inkl. Gateway-/Router-/NAT-Prüfung)
+    if(path.length>0 && !simulatePingHops(pc.id, inetNode.id, path, 64).blocked) internetOk++;
     else internetFail.push(pc.label);
   });
   if(pcs.length>0 && inetNode) {
     if(internetFail.length===0) {
-      checks.push({status:'ok', icon:'📡', title:`Internet erreichbar (${pcs.length}/${pcs.length})`, detail:'Alle Endgeräte haben Internet-Zugang'});
+      checks.push({key:'internet', status:'ok', icon:'📡', title:`Internet erreichbar (${pcs.length}/${pcs.length})`, detail:'Alle Endgeräte haben Internet-Zugang'});
     } else if(internetOk>0) {
-      checks.push({status:'warn', icon:'📡', title:`Internet: ${internetOk}/${pcs.length} erreichbar`, detail:'Nicht erreichbar: '+internetFail.join(', ')});
+      checks.push({key:'internet', status:'warn', icon:'📡', title:`Internet: ${internetOk}/${pcs.length} erreichbar`, detail:'Nicht erreichbar: '+internetFail.join(', ')});
     } else {
-      checks.push({status:'err', icon:'📡', title:'Kein Internet-Zugang', detail:'Kein Endgerät kann das Internet erreichen'});
+      checks.push({key:'internet', status:'err', icon:'📡', title:'Kein Internet-Zugang', detail:'Kein Endgerät kann das Internet erreichen'});
     }
   } else if(pcs.length===0) {
-    checks.push({status:'warn', icon:'📡', title:'Keine Endgeräte', detail:'Füge PCs/Laptops hinzu'});
+    checks.push({key:'internet', status:'warn', icon:'📡', title:'Keine Endgeräte', detail:'Füge PCs/Laptops hinzu'});
   }
 
-  // ── 7) Router-Check: Subnetz-Routing + Konfiguration ──
-  const routers = allNodes.filter(n=>n.type==='Router');
-  const subnets = new Set(allNodes.filter(n=>n.ip).map(n=>{
-    const parts=n.ip.split('.');
-    return parts.length>=3?parts[0]+'.'+parts[1]+'.'+parts[2]:null;
-  }).filter(Boolean));
+  // ── 7) Router-Check: Subnetz-Routing + Konfiguration (inkl. L3-Switch) ──
+  const routers = allNodes.filter(n=>ROUTER_TYPES.includes(n.type));
+  const subnets = new Set();
+  allNodes.forEach(n=>{
+    if(ROUTER_TYPES.includes(n.type)) {
+      if(n.routerCfg) Object.values(n.routerCfg.interfaces||{}).forEach(i=>{
+        const l = networkLabel(i.ip, i.mask); if(l) subnets.add(l);
+      });
+    } else if(n.ip) {
+      const l = networkLabel(n.ip, n.mask); if(l) subnets.add(l);
+    }
+  });
 
   if(subnets.size>1 && routers.length===0) {
     checks.push({status:'err', icon:'📡', title:`${subnets.size} Subnetze ohne Router`, detail:'Geräte in verschiedenen Subnetzen brauchen einen Router!'});
@@ -3925,8 +4047,8 @@ function renderValidation(checks) {
       <div class="val-item ${c.status}">
         <span class="vi">${c.icon}</span>
         <div class="vt">
-          <div>${c.title}</div>
-          <div class="vl">${c.detail}</div>
+          <div>${esc(c.title)}</div>
+          <div class="vl">${esc(c.detail)}</div>
         </div>
       </div>
     `).join('')}
@@ -3939,7 +4061,7 @@ function updateStatusBar(checks) {
   const overall   = errCount>0?'err':warnCount>0?'warn':'ok';
 
   // Internet check
-  const inetCheck = checks.find(c=>c.icon==='📡'&&c.title.includes('erreichbar'));
+  const inetCheck = checks.find(c=>c.key==='internet');
   const fwCheck   = checks.find(c=>c.icon==='🛡️');
   const ipCheck   = checks.find(c=>c.icon==='🔢'||c.icon==='⚠️');
   const isoCheck  = checks.find(c=>c.icon==='🔌');
@@ -3992,7 +4114,7 @@ function applyNodeBadges(checks, pcs, inetNode, isolated, noIP, dupeNodes, dupeI
   if(inetNode) {
     pcs.forEach(pc=>{
       const path=findPath(pc.id, inetNode.id);
-      const reachable = path.length>0 && !isBlocked(pc, inetNode, path);
+      const reachable = path.length>0 && !simulatePingHops(pc.id, inetNode.id, path, 64).blocked;
       if(reachable) {
         // Badge only if no error badge already on this node
         if(!pc.el.querySelector('.val-badge.err')) {
@@ -4083,23 +4205,6 @@ function selectAmt(el, amt) {
   }
 }
 
-document.addEventListener('keydown', e=>{
-  if(e.key==='Escape') {
-    const ol = document.getElementById('legendOverlay');
-    const oi = document.getElementById('impressumOverlay');
-    const os = document.getElementById('spendeOverlay');
-    const wl = document.getElementById('welcomeOverlay');
-    if(wl && wl.style.display !== 'none' && wl.style.opacity !== '0') { closeWelcome(); return; }
-    if(ol && ol.classList.contains('open')) toggleLegend();
-    if(oi && oi.classList.contains('open')) toggleImpressum();
-    if(os && os.classList.contains('open')) toggleSpende();
-    const ofb = document.getElementById('feedbackOverlay');
-    if(ofb && ofb.style.display === 'flex') toggleFeedback();
-    const of2 = document.getElementById('feedbackOverlay');
-    if(of2 && of2.classList.contains('open')) toggleFeedback();
-  }
-});
-
 function closeWelcome() {
   const overlay = document.getElementById('welcomeOverlay');
   overlay.style.transition = 'opacity .45s ease';
@@ -4146,10 +4251,10 @@ function sendFeedback(e) {
   const subj = (document.getElementById('fbSubject')||{}).value || '';
   const msg  = (document.getElementById('fbMessage')||{}).value || '';
   const stars = fbStarVal > 0 ? '\n\nBewertung: ' + '\u2B50'.repeat(fbStarVal) + ' (' + fbStarVal + '/5)' : '';
-  const sys   = '\n\n---\nNetSim Pro v1.0 | Ger\u00e4te: ' + Object.keys(nodes).length + ' | Verbindungen: ' + edges.length;
+  const sys   = '\n\n---\nNetSim Pro v1.1 | Ger\u00e4te: ' + Object.keys(nodes).length + ' | Verbindungen: ' + edges.length;
   const ms = encodeURIComponent('[NetSim Pro] ' + fbType + (subj ? ': ' + subj : ''));
   const mb = encodeURIComponent((msg || '(keine Nachricht)') + stars + sys);
-  window.location.href = 'mailto:alex.glauche@googlemail.com?subject=' + ms + '&body=' + mb;
+  window.location.href = 'mailto:info@alexander-scherer.com?subject=' + ms + '&body=' + mb;
   setTimeout(() => {
     const form = document.getElementById('fbForm');
     const succ = document.getElementById('fbSuccess');
@@ -4312,21 +4417,23 @@ function showAchievementToast(ach) {
   setTimeout(() => toast.classList.remove('show'), 4500);
 }
 
-/* ESC closes all modals */
+/* ESC closes all modals (ein zentraler Handler) */
 document.addEventListener('keydown', e => {
   if(e.key !== 'Escape') return;
   const ol = document.getElementById('legendOverlay');
   const oi = document.getElementById('impressumOverlay');
   const os = document.getElementById('spendeOverlay');
   const of = document.getElementById('feedbackOverlay');
+  const op = document.getElementById('projektOverlay');
   const ow = document.getElementById('welcomeOverlay');
   const rw = document.getElementById('rewardOverlay');
   if(ol && ol.classList.contains('open')) toggleLegend();
   else if(oi && oi.classList.contains('open')) toggleImpressum();
   else if(os && os.classList.contains('open')) toggleSpende();
+  else if(op && op.classList.contains('open')) toggleProjekt();
   else if(of && of.style.display === 'flex') toggleFeedback();
   else if(rw && rw.classList.contains('show')) closeReward();
-  else if(ow && ow.style.display !== 'none') closeWelcome();
+  else if(ow && ow.style.display !== 'none' && ow.style.opacity !== '0') closeWelcome();
 });
 
 /* ═══════════════════════════════════════════════
@@ -4359,7 +4466,7 @@ function serializeNetwork() {
   const edgeData = edges.map(e => ({ id: e.id, from: e.from, to: e.to }));
   const labelData = labelNodes.map(l=>({id:l.id,x:l.x,y:l.y,text:l.text}));
   return {
-    version: '1.1',
+    version: '1.2',
     saved: new Date().toISOString(),
     nodeCounter, edgeCounter, labelCounter,
     nodes: nodeData,
@@ -4371,8 +4478,10 @@ function serializeNetwork() {
 
 /* ── Deserialize JSON back into network ── */
 function deserializeNetwork(data) {
-  // Clear without confirm
+  // Clear without confirm (inkl. alter Text-Labels!)
   Object.keys(nodes).forEach(id => { delete BADGE_REASONS[id]; nodes[id].el.remove(); });
+  labelNodes.forEach(l => { if(l.cleanup) l.cleanup(); if(l.el) l.el.remove(); });
+  labelNodes = []; labelCounter = 0;
   nodes = {}; edges = [];
   document.getElementById('mainCanvas').innerHTML = '';
   document.getElementById('noSelectionMsg').style.display = 'block';
@@ -4402,6 +4511,27 @@ function deserializeNetwork(data) {
   data.edges.forEach(ed => {
     if(nodes[ed.from] && nodes[ed.to]) {
       edges.push({ id: ed.id, from: ed.from, to: ed.to });
+    }
+  });
+
+  // Migration alter Projekte (v1.1): Router-Interfaces von ethN auf Kabel-IDs umschlüsseln
+  Object.values(nodes).forEach(n => {
+    if(ROUTER_TYPES.includes(n.type) && n.routerCfg && n.routerCfg.interfaces) {
+      const keys = Object.keys(n.routerCfg.interfaces);
+      if(keys.some(k => /^eth\d+$/.test(k))) {
+        const myEdges = edges.filter(e => e.from === n.id || e.to === n.id);
+        const migrated = {};
+        keys.forEach(k => {
+          const m = /^eth(\d+)$/.exec(k);
+          if(m) {
+            const e = myEdges[parseInt(m[1])];
+            if(e) migrated[e.id] = n.routerCfg.interfaces[k];
+          } else {
+            migrated[k] = n.routerCfg.interfaces[k];
+          }
+        });
+        n.routerCfg.interfaces = migrated;
+      }
     }
   });
 
@@ -4526,7 +4656,7 @@ function renderProjectList() {
     <div class="pm-project-item">
       <div class="pm-project-icon">🗂️</div>
       <div class="pm-project-info">
-        <div class="pm-project-name">${p.name}</div>
+        <div class="pm-project-name">${esc(p.name)}</div>
         <div class="pm-project-meta">${p.saved} &nbsp;·&nbsp; ${p.devices} Ger\u00e4te &nbsp;·&nbsp; ${p.cables} Kabel</div>
       </div>
       <div class="pm-project-actions">
@@ -4537,11 +4667,14 @@ function renderProjectList() {
   `).join('');
 }
 
-/* Quick-save shortcut Ctrl+S */
+/* Quick-save shortcut Ctrl+S: Projektdialog öffnen und Namensfeld fokussieren */
 document.addEventListener('keydown', e => {
   if((e.ctrlKey||e.metaKey) && e.key === 's') {
     e.preventDefault();
-    toggleProjekt();
+    const o = document.getElementById('projektOverlay');
+    if(o && !o.classList.contains('open')) toggleProjekt();
+    const nameEl = document.getElementById('projektName');
+    if(nameEl) setTimeout(()=>nameEl.focus(), 60);
   }
 });
 
@@ -4565,7 +4698,7 @@ document.addEventListener('keydown', e => {
       <div class="wm-icon">🌐</div>
       <div class="wm-title-block">
         <div class="wm-title">Net<span>Sim</span> Pro</div>
-        <div class="wm-sub">NETZWERK SIMULATOR &middot; v1.0 &middot; 2026</div>
+        <div class="wm-sub">NETZWERK SIMULATOR &middot; v1.1 &middot; 2026</div>
       </div>
     </div>
 
@@ -4604,7 +4737,7 @@ document.addEventListener('keydown', e => {
       <div class="wm-footer">
         <div class="wm-author">
           Alexander Scherer &middot; Berlin 2026<br>
-          <a href="/cdn-cgi/l/email-protection#16777a736e38717a7763757e7356717979717a737b777f7a3875797b"><span class="__cf_email__" data-cfemail="10717c75683e777c716573787550777f7f777c757d71797c3e737f7d">[email&#160;protected]</span></a>
+          <a href="mailto:info@alexander-scherer.com">info&#64;alexander-scherer.com</a>
         </div>
         <div style="display:flex;gap:8px">
           <button class="wm-btn-imp" onclick="closeWelcome();setTimeout(toggleImpressum,220)">&sect; Impressum</button>
@@ -4724,7 +4857,7 @@ document.addEventListener('keydown', e => {
       <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);gap:10px">
         <div style="font-size:11px;color:#3a4060;font-family:'Share Tech Mono',monospace;line-height:1.6">
           Öffnet deinen E-Mail-Client<br>
-          <a href="/cdn-cgi/l/email-protection#cfaea3aab7e1a8a3aebaaca7aa8fa8a0a0a8a3aaa2aea6a3e1aca0a2" style="color:#6a70a0;text-decoration:none"><span class="__cf_email__" data-cfemail="d0b1bcb5a8feb7bcb1a5b3b8b590b7bfbfb7bcb5bdb1b9bcfeb3bfbd">[email&#160;protected]</span></a>
+          <a href="mailto:info@alexander-scherer.com" style="color:#6a70a0;text-decoration:none">info&#64;alexander-scherer.com</a>
         </div>
         <button onclick="sendFeedback(event)"
           style="padding:10px 24px;background:#a78bfa;color:#000;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border:none;border-radius:7px;cursor:pointer;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 20px rgba(167,139,250,0.3)">
@@ -4823,7 +4956,7 @@ document.addEventListener('keydown', e => {
       </div>
       <div class="imp-section">
         <div class="imp-section-title">Kontakt</div>
-        <div class="imp-line">E&#8209;Mail: <a href="mailto:alex.glauche@googlemail.com">alex.glauche&#64;googlemail.com</a></div>
+        <div class="imp-line">E&#8209;Mail: <a href="mailto:info@alexander-scherer.com">info&#64;alexander-scherer.com</a></div>
       </div>
       <div class="imp-section">
         <div class="imp-section-title">Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</div>
