@@ -3660,6 +3660,19 @@ function simulatePingHops(fromId, toId, path, ttl) {
               reason:`Standard-Gateway ${fromNode.gw} liegt außerhalb des eigenen Subnetzes ${networkLabel(fromNode.ip, fromNode.mask)}`,
               icmpType:'unreachable', hops:0};
     }
+    // Gateway muss auf ein real existierendes Router-Interface zeigen.
+    // (Host schickt ARP an die GW-IP; antwortet dort kein Router, scheitert die Zustellung.)
+    const gwIsRouter = Object.values(nodes).some(nd =>
+      ROUTER_TYPES.includes(nd.type) && nd.routerCfg &&
+      Object.values(nd.routerCfg.interfaces || {}).some(i => i.ip === fromNode.gw));
+    if(!gwIsRouter) {
+      const self = fromNode.gw === fromNode.ip;
+      return {blocked:true, hopNum:0, blockedAt:fromNode.label, fromIp:fromNode.ip,
+              reason: self
+                ? `Standard-Gateway ${fromNode.gw} zeigt auf das Gerät selbst – ein Gateway muss ein Router im lokalen Netz sein`
+                : `Standard-Gateway ${fromNode.gw} zeigt auf kein Router-Interface im lokalen Netz – kein Gerät leitet die Pakete weiter (ARP ohne Antwort)`,
+              icmpType:'unreachable', hops:0};
+    }
   }
 
   // Hop-by-hop walk
